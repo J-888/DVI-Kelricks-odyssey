@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Test</title>
+		<script src='lib/rot.js'></script>
+		<script>
+			createMap = function() {
+				document.getElementById("mapsDiv").innerHTML = "";
+
+				var w = 80, h = 40;	//var w = 80, h = 40;
+				/* create a connected map where the player can reach all non-wall sections */
+				var map = new ROT.Map.Cellular(w, h, { connected: true });
+
+				/* cells with 1/2 probability */
+				map.randomize(0.5);
+				createSection("Random map:", mapToString3(map));
+
+				/* make a few generations */
+				for (var i=0; i<4; i++) map.create();
+
+				createSection("Iterated:", mapToString3(map));
+
+				/* display only the final map */
+				map.create();
+				createSection("Iteration result:", mapToString3(map));
+
+				/* now connect the maze */
+				var callback = function(){};
+
+				var connectionCallback = function(from, to){ 
+					console.log("Connection was made " + from + " to " + to);
+				};
+
+				map.connect(callback, 1, connectionCallback);
+				createSection("Connected:", mapToString3(map));
+			};
+
+			createSection = function(title, content) {
+				var h1 = document.createElement('h1');
+				h1.appendChild(document.createTextNode(title));
+				document.getElementById("mapsDiv").appendChild(h1);
+
+				var mapPrint = document.createElement('xmp');
+				mapPrint.appendChild(document.createTextNode(content));
+				document.getElementById("mapsDiv").appendChild(mapPrint);
+			}
+
+			String.prototype.replaceAll = function(search, replacement) {
+				var target = this;
+				return target.replace(new RegExp(search, 'g'), replacement);
+			};
+
+			mapToString = function(map) {
+				var zeroesChar = '#';
+				var onesChar = ' ';
+
+				var str = "";
+				map._map.forEach(function(element) {
+					var line = element.toString().replaceAll(',', '').replaceAll('0', zeroesChar).replaceAll('1', onesChar);
+					str += line + '\n';
+				});
+				return str;
+			};
+
+			mapToString2 = function(map) {
+				var zeroesChar = '#';
+				var onesChar = ' ';
+
+				var str = "";
+				
+				for(i=0; i<map._height; i++) {
+					for(j=0; j<map._width; j++) {
+						if(map._map[j][i] == 0)
+							str += zeroesChar;
+						else
+							str += onesChar;
+					}
+					str += '\n';
+				};
+
+				return str;
+			};
+
+			mapToString3 = function(map) {
+				var zeroesChar = '#';
+				var onesChar = ' ';
+
+				var str = "";
+				
+				for(i=0; i<map._height; i++) {
+					for(j=0; j<map._width; j++) {
+						if(map._map[j][i] == 0)
+							str += zeroesChar + ' ';
+						else
+							str += onesChar + ' ';
+					}
+					str += '\n';
+				};
+
+				return str;
+			};
+
+			mapToString3 = function(map) {
+				var zeroesChar = '#';
+				var onesChar = ' ';
+
+				var str = "";
+				
+				for(i=0; i<map._height; i++) {
+					for(j=0; j<map._width; j++) {
+						if(map._map[j][i] == 0)
+							str += zeroesChar + ' ';
+						else
+							str += onesChar + ' ';
+					}
+					str += '\n';
+				};
+
+				return str;
+			};
+
+		</script>
+	</head>
+	<body>
+		<button onclick="createMap()">Generate map</button>
+		<div id="mapsDiv"></div>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
