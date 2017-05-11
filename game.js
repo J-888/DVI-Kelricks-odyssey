@@ -54,7 +54,7 @@ window.addEventListener("load",function() {
 		init: function(p) {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
-				//sheet: "player_small",	// Setting a sprite sheet sets sprite width and height
+				sheet: "basic_move_d",	// Setting a sprite sheet sets sprite width and height
 				//sprite: "player anim",
 				x: 150,			// You can also set additional properties that can
 				y: 380,				// be overridden on object creation
@@ -70,93 +70,13 @@ window.addEventListener("load",function() {
 			// default input actions (left, right to move, up or action to jump)
 			// It also checks to make sure the player is on a horizontal surface before
 			// letting them jump.
-			this.add('2d, platformerControls, animation');
+			this.add('2d, topdownControls, animation');
 
 			if (typeof this.p.minX !== 'undefined')
 				this.p.minX += this.p.cx;
 			if (typeof this.p.maxX !== 'undefined')
 				this.p.maxX -= this.p.cx;
 
-			// Write event handlers to respond hook into behaviors.
-			// hit.sprite is called everytime the player collides with a sprite
-			/*this.on("hit.sprite",function(collision) {
-
-				// Check the collision, if it's the Tower, you win!
-				if(collision.obj.isA("Tower")) {
-					Q.stageScene("endGame",1, { label: "You Won!" }); 
-					this.destroy();
-				}
-			});*/
-
-		},
-		step: function(dt) {
-			console.log("x: " + this.p.x + "  y: " + this.p.y);
-
-			if(this.p.y > 610) { //map fall
-				this.destroy();
-				Q.stageScene("endGame",2, { label: "You Lose" });
-			} else {
-
-				if(this.p.invulnerabilityTime > 0)
-					this.p.invulnerabilityTime = Math.max(this.p.invulnerabilityTime - dt, 0);
-
-				if(typeof this.p.minX !== 'undefined' && this.p.minX >= this.p.x) {
-					this.p.x = this.p.minX;
-					this.p.vx = Math.max(this.p.vx, 0);
-				} else if(typeof this.p.maxX !== 'undefined' && this.p.maxX <= this.p.x) {
-					this.p.x = this.p.maxX;
-					this.p.vx = Math.min(this.p.vx, 0);
-				}
-
-				if(!this.p.jumping && this.p.landed > 0) {
-					if(this.p.vx > 0) {
-						this.play("run_right");
-					} else if(this.p.vx < 0) {
-						this.play("run_left");
-					} else {
-						this.play("stand_" + this.p.direction);
-					}
-				} else {
-					this.play("fall_" + this.p.direction);
-				}
-
-				if(this.p.vx == 0)
-					this.p.x = Math.round(this.p.x);
-			}
-		},
-		grow: function(){
-			if(this.p.sheet == "mario_small"){
-				this.sheet("mario_large", true);
-			} else {
-				Q.state.inc("score", 1000);
-			}
-		},
-		shrink: function(){
-			this.p.invulnerabilityTime = 0.4;
-			if(this.p.sheet == "mario_large"){
-				this.sheet("mario_small", true);
-			}
-		},
-		receiveDamage: function(){
-			if(this.p.invulnerabilityTime == 0) {
-				if(this.p.sheet == "mario_large")
-					this.shrink();
-				else
-					this.loseLife();
-			}
-		},
-		loseLife: function(){
-			//this.p.x = 150;
-			//this.p.y = 380;
-			if(Q.state.get("lives") == 0) {
-				this.destroy();
-				Q.stageScene("endGame",2, { label: "You Lose" });
-			}
-			else {
-				this.destroy();
-				Q.state.dec("lives",1);
-				Q.stageScene('level' + Q.state.get("level"));
-			}
 		}
 	});
 
@@ -235,11 +155,13 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("", function() {
+	Q.load("basic_moves/basic_move_d.png, basic_moves/basic_move_d.json, basic_moves/basic_move_r.png, basic_moves/basic_move_r.json, basic_moves/basic_move_u.png, basic_moves/basic_move_u.json, sword_attacks/sword_attack_d.png, sword_attacks/sword_attack_d.json, sword_attacks/sword_attack_r.png, sword_attacks/sword_attack_r.json, sword_attacks/sword_attack_u.png, sword_attacks/sword_attack_u.json", function() {
+		Q.compileSheets("basic_moves/basic_move_d.png","basic_moves/basic_move_d.json");
+		
 		//Q.debug = true;
 	});
 
-	Q.loadTMX("", function() {
-		//Q.stageScene('titleScreen');
+	Q.loadTMX("level1.tmx, sprites.json", function() {
+		Q.stageScene("level1");
 	});
 });
