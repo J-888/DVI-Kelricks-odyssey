@@ -1,4 +1,4 @@
-# DVI-Zelda
+# DVI-Kelricks-odyssey
 Game developed for the subjet *Videogame Development through Web Tecnologies* (DVI)
 
 Inspired by [The Legend of Zelda](https://en.wikipedia.org/wiki/The_Legend_of_Zelda) video game series
