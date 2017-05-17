@@ -54,12 +54,12 @@ window.addEventListener("load",function() {
 		init: function(p) {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
-				sheet: "basic_move_d",	// Setting a sprite sheet sets sprite width and height
+				sheet: "stand_down",	// Setting a sprite sheet sets sprite width and height
 				//sprite: "player anim",
 				x: 150,			// You can also set additional properties that can
 				y: 380,				// be overridden on object creation
 				jumpSpeed: -550,
-				invulnerabilityTime: 0,
+				gravity: 0,
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT
 			});
 
@@ -70,7 +70,7 @@ window.addEventListener("load",function() {
 			// default input actions (left, right to move, up or action to jump)
 			// It also checks to make sure the player is on a horizontal surface before
 			// letting them jump.
-			this.add('2d, topdownControls, animation');
+			this.add('2d, stepControls, animation');
 
 			if (typeof this.p.minX !== 'undefined')
 				this.p.minX += this.p.cx;
@@ -155,8 +155,8 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("basic_moves/basic_move_d.png, basic_moves/basic_move_d.json, basic_moves/basic_move_r.png, basic_moves/basic_move_r.json, basic_moves/basic_move_u.png, basic_moves/basic_move_u.json, sword_attacks/sword_attack_d.png, sword_attacks/sword_attack_d.json, sword_attacks/sword_attack_r.png, sword_attacks/sword_attack_r.json, sword_attacks/sword_attack_u.png, sword_attacks/sword_attack_u.json", function() {
-		Q.compileSheets("basic_moves/basic_move_d.png","basic_moves/basic_move_d.json");
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json", function() {
+		Q.compileSheets("playerSheetTransparent.png","playerSpritesTransparent.json");
 		
 		//Q.debug = true;
 	});
