@@ -25,8 +25,8 @@ window.addEventListener("load",function() {
 /********************************/
 
 	Q.animations('player anim', {
-		stand: { frames: [0], rate: 1/4.5 },
-		//stand_flipped: { frames: [0], rate: 1/4.5, flip: true }
+		stand: { frames: [0], rate: 1/4.5, flip: false },
+		stand_flipped: { frames: [0], rate: 1/4.5, flip: "x" }
 		/*run_right: { frames: [3,2,1], rate: 1/4.5 }, 
 		run_left: { frames: [17,16,15], rate:1/4.5 },
 		//fire_right: { frames: [9,10,10], next: 'stand_right', rate: 1/30, trigger: "fired" },
@@ -72,6 +72,7 @@ window.addEventListener("load",function() {
 				y: 380,				// be overridden on object creation
 				gravity: 0,
 				scale: 1,
+				flip: false,
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT
 			});
 
@@ -106,8 +107,7 @@ window.addEventListener("load",function() {
 		customplay: function(newSheet, newAnim) {
 			if(newSheet.includes("_right")) {
 				newSheet = newSheet.replace("_right", "_left");
-				//newAnim += "_flipped";
-				this.p.flip = "x";
+				newAnim += "_flipped";
 			}
 
 			if(this.p.sheet != newSheet)
