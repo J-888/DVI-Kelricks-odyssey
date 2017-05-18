@@ -93,7 +93,7 @@ window.addEventListener("load",function() {
 
 		},
 		step: function(dt) {
-			//console.log("dir:" + this.p.direction);
+			//console.log("dir:" + this.p.lastdirection);
 			//console.log("vx:" + this.p.vx);
 			//console.log("vy:" + this.p.vy);
 			
@@ -103,9 +103,9 @@ window.addEventListener("load",function() {
 				this.play("run_left");
 			}*/ 
 
-			//if(this.p.vx != 0 | this.p.vy != 0) {
 
-			if(this.p.stepping) {
+			//if(this.p.stepping) {
+			if(this.p.vx != 0 | this.p.vy != 0) {
 				this.customplay("move_" + this.p.direction, "move");
 			} else {
 				this.customplay("stand_" + this.p.direction, "stand");
@@ -204,10 +204,11 @@ window.addEventListener("load",function() {
 	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json", function() {
 		Q.compileSheets("playerSheetTransparent.png","playerSpritesTransparent.json");
 		
+		Q.loadTMX("level1.tmx, sprites.json", function() {
+			Q.stageScene("level1");
+		});
+
 		//Q.debug = true;
 	});
 
-	Q.loadTMX("level1.tmx, sprites.json", function() {
-		Q.stageScene("level1");
-	});
 });
