@@ -26,7 +26,9 @@ window.addEventListener("load",function() {
 
 	Q.animations('player anim', {
 		stand: { frames: [0], rate: 1/4.5, flip: false },
-		stand_flipped: { frames: [0], rate: 1/4.5, flip: "x" }
+		stand_flipped: { frames: [0], rate: 1/4.5, flip: "x" },
+		move: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5},
+		move_flipped: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5, flip: "x" }
 		/*run_right: { frames: [3,2,1], rate: 1/4.5 }, 
 		run_left: { frames: [17,16,15], rate:1/4.5 },
 		//fire_right: { frames: [9,10,10], next: 'stand_right', rate: 1/30, trigger: "fired" },
@@ -91,15 +93,23 @@ window.addEventListener("load",function() {
 
 		},
 		step: function(dt) {
-			//console.log(this.p.direction);
+			//console.log("dir:" + this.p.direction);
+			//console.log("vx:" + this.p.vx);
+			//console.log("vy:" + this.p.vy);
 			
 			/*if(this.p.vx > 0) {
 				this.play("run_right");
 			} else if(this.p.vx < 0) {
 				this.play("run_left");
-			} else {*/
+			}*/ 
+
+			//if(this.p.vx != 0 | this.p.vy != 0) {
+
+			if(this.p.stepping) {
+				this.customplay("move_" + this.p.direction, "move");
+			} else {
 				this.customplay("stand_" + this.p.direction, "stand");
-			/*}*/
+			}
 
 			/*if(this.p.vx == 0)
 				this.p.x = Math.round(this.p.x);*/
