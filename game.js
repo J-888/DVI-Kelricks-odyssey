@@ -77,6 +77,22 @@ window.addEventListener("load",function() {
 			if (typeof this.p.maxX !== 'undefined')
 				this.p.maxX -= this.p.cx;
 
+		},
+		step: function(dt) {
+			console.log("x: " + this.p.x + "  y: " + this.p.y);
+			if(this.p.invulnerabilityTime > 0)
+				this.p.invulnerabilityTime = Math.max(this.p.invulnerabilityTime - dt, 0);
+
+			if(this.p.vx > 0) {
+				this.play("run_right");
+			} else if(this.p.vx < 0) {
+				this.play("run_left");
+			} else {
+				this.play("stand_" + this.p.direction);
+			}
+
+			/*if(this.p.vx == 0)
+				this.p.x = Math.round(this.p.x);*/
 		}
 	});
 

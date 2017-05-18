@@ -1,3 +1,5 @@
 {
-	"stand_down":{"sx":15,"sy":9,"tileW":18,"tileH":23,"frames":1}
+	"stand_down":{	"sx":15,	"sy":9,		"tileW":18,		"tileH":23,		"frames":1},
+	"stand_left":{	"sx":51,	"sy":9,		"tileW":17,		"tileH":23,		"frames":1},
+	"stand_up":{	"sx":79,	"sy":9,		"tileW":17,		"tileH":23,		"frames":1}
 }
