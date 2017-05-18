@@ -24,6 +24,18 @@ window.addEventListener("load",function() {
 /***********ANIMATIONS***********/
 /********************************/
 
+	Q.animations('player anim', {
+		stand: { frames: [0], rate: 1/4.5 },
+		//stand_flipped: { frames: [0], rate: 1/4.5, flip: true }
+		/*run_right: { frames: [3,2,1], rate: 1/4.5 }, 
+		run_left: { frames: [17,16,15], rate:1/4.5 },
+		//fire_right: { frames: [9,10,10], next: 'stand_right', rate: 1/30, trigger: "fired" },
+		//fire_left: { frames: [20,21,21], next: 'stand_left', rate: 1/30, trigger: "fired" },
+		stand_right: { frames: [0], loop: true },
+		stand_left: { frames: [14], loop: true },
+		fall_right: { frames: [4], loop: true },
+		fall_left: { frames: [18], loop: true }*/
+	});
 	
 /********************************/
 /***********COMPONENTS***********/
@@ -55,22 +67,21 @@ window.addEventListener("load",function() {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
 				sheet: "stand_down",	// Setting a sprite sheet sets sprite width and height
-				//sprite: "player anim",
+				sprite: "player anim",
 				x: 150,			// You can also set additional properties that can
 				y: 380,				// be overridden on object creation
-				jumpSpeed: -550,
 				gravity: 0,
+				scale: 1,
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT
 			});
 
 			// Add in pre-made components to get up and running quickly
 			// The `2d` component adds in default 2d collision detection
 			// and kinetics (velocity, gravity)
-			// The `platformerControls` makes the player controllable by the
-			// default input actions (left, right to move, up or action to jump)
+			// The `topdownControls` its a custom controls module
 			// It also checks to make sure the player is on a horizontal surface before
 			// letting them jump.
-			this.add('2d, stepControls, animation');
+			this.add('2d, topdownControls, animation');
 
 			if (typeof this.p.minX !== 'undefined')
 				this.p.minX += this.p.cx;
@@ -79,20 +90,29 @@ window.addEventListener("load",function() {
 
 		},
 		step: function(dt) {
-			console.log("x: " + this.p.x + "  y: " + this.p.y);
-			if(this.p.invulnerabilityTime > 0)
-				this.p.invulnerabilityTime = Math.max(this.p.invulnerabilityTime - dt, 0);
-
-			if(this.p.vx > 0) {
+			//console.log(this.p.direction);
+			
+			/*if(this.p.vx > 0) {
 				this.play("run_right");
 			} else if(this.p.vx < 0) {
 				this.play("run_left");
-			} else {
-				this.play("stand_" + this.p.direction);
-			}
+			} else {*/
+				this.customplay("stand_" + this.p.direction, "stand");
+			/*}*/
 
 			/*if(this.p.vx == 0)
 				this.p.x = Math.round(this.p.x);*/
+		},
+		customplay: function(newSheet, newAnim) {
+			if(newSheet.includes("_right")) {
+				newSheet = newSheet.replace("_right", "_left");
+				//newAnim += "_flipped";
+				this.p.flip = "x";
+			}
+
+			if(this.p.sheet != newSheet)
+				this.sheet(newSheet);
+			this.play(newAnim);
 		}
 	});
 
