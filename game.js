@@ -17,7 +17,7 @@ window.addEventListener("load",function() {
 		})
   
 		// And turn on default input controls and touch input (for UI)
-		.controls().touch();
+		.controls(true);
 
 
 /********************************/
@@ -118,7 +118,9 @@ window.addEventListener("load",function() {
 			if(newSheet.includes("_right")) {
 				newSheet = newSheet.replace("_right", "_left");
 				newAnim += "_flipped";
-			}
+			} 
+			else
+				this.p.flip = false;
 
 			if(this.p.sheet != newSheet)
 				this.sheet(newSheet);
