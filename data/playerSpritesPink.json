@@ -1,0 +1,9 @@
+{
+	"sword_down":{	"sx":23,	"sy":131,		"tileW":33,		"tileH":38,		"frames":8, "spacingX" : 1},
+	"sword_left":{	"sx":17,	"sy":172,		"tileW":35,		"tileH":44,		"frames":8, "spacingX" : 0},
+	"sword_up":{	"sx":79,	"sy":9,		"tileW":17,		"tileH":23,		"frames":1},
+
+	"move_down":{	"sx":15,	"sy":76,	"tileW":18,		"tileH":24,		"frames":10, "spacingX" : 14},
+	"move_left":{	"sx":350,	"sy":76,	"tileW":25,		"tileH":24,		"frames":10, "spacingX" : 7},
+	"move_up":{		"sx":683,	"sy":76,	"tileW":18,		"tileH":24,		"frames":10, "spacingX" : 14}
+}
