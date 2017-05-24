@@ -44,7 +44,7 @@ window.addEventListener("load",function() {
 		move_up: { frames: [2,3], rate: 1/4.5},
 		move_left: { frames: [4,5], rate: 1/4.5},
 		move_right: { frames: [6,7], rate: 1/4.5},
-		ready: { frames: [0], rate: 2, next: "shoot"},
+		ready: { frames: [0], rate: 3/2, next: "shoot"},
 		shoot: { frames: [1], rate: 1/2, trigger: "fired", next: "ready"}
 	});
 
