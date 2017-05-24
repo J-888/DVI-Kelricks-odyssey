@@ -19,7 +19,7 @@ window.addEventListener("load",function() {
 		// And turn on default input controls and touch input (for UI)
 		.controls(true);
 
-
+	Q.gravityY = 0;
 /********************************/
 /***********ANIMATIONS***********/
 /********************************/
@@ -38,10 +38,47 @@ window.addEventListener("load",function() {
 		fall_right: { frames: [4], loop: true },
 		fall_left: { frames: [18], loop: true }*/
 	});
+
+	Q.animations('octorok anim', {
+		move_down: { frames: [0,1], rate: 1/4.5},
+		move_up: { frames: [2,3], rate: 1/4.5},
+		move_left: { frames: [4,5], rate: 1/4.5},
+		move_right: { frames: [6,7], rate: 1/4.5},
+	});
 	
 /********************************/
 /***********COMPONENTS***********/
 /********************************/
+
+	Q.component('defaultEnemy', {
+		added: function () {
+			this.entity.p.collisionMask = Q.SPRITE_ENEMY | Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT;
+			this.entity.p.type = Q.SPRITE_ENEMY;
+
+			this.entity.on("die",this.entity,"die");
+
+			this.entity.on("bump.left,bump.right,bump.bottom",function(collision) {
+				if(collision.obj.isA("Player")) { 
+					collision.obj.receiveDamage();
+				}
+			});
+
+			this.entity.on("bump.top",function(collision) {
+				if(collision.obj.isA("Player")) { 
+					this.play("die", 1);
+					collision.obj.p.vy = -300;
+					this.p.vx = 0;
+				}
+			});
+		},
+		extend: {
+			die: function(p) {
+				this.destroy();
+				Q.state.inc("score",200);
+			}
+		}
+	});
+
 
 
 /********************************/
@@ -72,7 +109,7 @@ window.addEventListener("load",function() {
 				sprite: "player anim",
 				x: 150,			// You can also set additional properties that can
 				y: 380,				// be overridden on object creation
-				gravity: 0,
+				//gravity: 0,
 				scale: 1,
 				flip: false,
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT
@@ -128,6 +165,22 @@ window.addEventListener("load",function() {
 		}
 	});
 
+	Q.Sprite.extend("Octorok",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "octorok_red",
+				sprite: "octorok anim"
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, defaultEnemy, aiShoot');
+			//this.play("run");
+		}
+	});
+
 
 /********************************/
 /************SCENES**************/
@@ -139,6 +192,8 @@ window.addEventListener("load",function() {
 		/*SPAWN PLAYER*/
 		var minX = 0, maxX = 60*34;
 		var player = stage.insert(new Q.Player({minX: minX, maxX: maxX}));
+
+		stage.insert(new Q.Octorok({x: 300, y: 300}));
 
 		/*VIEWPORT*/
 		stage.add("viewport").follow(player,{ x: true, y: false },{ minX: minX, maxX: maxX });
@@ -203,8 +258,9 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, octorok.png, octorok.json", function() {
 		Q.compileSheets("playerSheetTransparent.png","playerSpritesTransparent.json");
+		Q.compileSheets("octorok.png","octorok.json");
 		
 		Q.loadTMX("level1.tmx, sprites.json", function() {
 			Q.stageScene("level1");

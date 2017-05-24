@@ -1,0 +1,5 @@
+{
+	"octorok_red":{"sx":10,"sy":10,"tileW":16,"tileH":15,"frames":8, "spacingX" : 2},
+	"octorok_blue":{"sx":10,"sy":93,"tileW":16,"tileH":15,"frames":8, "spacingX" : 2},
+	"octorok_yellow":{"sx":168,"sy":10,"tileW":16,"tileH":15,"frames":8, "spacingX" : 2}
+}
