@@ -44,6 +44,13 @@ window.addEventListener("load",function() {
 		move_up: { frames: [2,3], rate: 1/4.5},
 		move_left: { frames: [4,5], rate: 1/4.5},
 		move_right: { frames: [6,7], rate: 1/4.5},
+		ready: { frames: [0], rate: 2, next: "shoot"},
+		shoot: { frames: [1], rate: 1/2, trigger: "fired", next: "ready"}
+	});
+
+
+	Q.animations('projectile anim', {
+		fly_3: { frames: [0,1,2], rate: 1/4.5}
 	});
 	
 /********************************/
@@ -77,6 +84,28 @@ window.addEventListener("load",function() {
 				Q.state.inc("score",200);
 			}
 		}
+	});
+
+	Q.component('projectile', {
+		added: function () {
+			this.entity.p.collisionMask = Q.SPRITE_ENEMY | Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT;
+			this.entity.p.type = Q.SPRITE_ENEMY;
+
+			//this.entity.on("hit",this.entity,"collision");
+		}/*,
+		collision: function(collision) {
+			if(collision.obj.isA("Mario")) { 
+				collision.obj.destroy();
+				if(Q.state.get("level") == 2)
+					Q.stageScene("endGame",1, { label: "You Win" });
+				else {
+					Q.state.inc("level",1);
+					Q.stageScene('level' + Q.state.get("level"));
+				}
+			}
+			else
+				this.entity.destroy();
+		}*/
 	});
 
 
@@ -162,6 +191,9 @@ window.addEventListener("load",function() {
 			if(this.p.sheet != newSheet)
 				this.sheet(newSheet);
 			this.play(newAnim);
+		},
+		hit: function() {
+			Q.state.dec("lives",1);
 		}
 	});
 
@@ -172,12 +204,65 @@ window.addEventListener("load",function() {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
 				sheet: "octorok_red",
-				sprite: "octorok anim"
+				sprite: "octorok anim",
+				proyectileSpeed: 100
 			});
 
 			// Add in pre-made components to get up and running quickly
 			this.add('2d, animation, defaultEnemy, aiShoot');
 			//this.play("run");
+    		this.on("fired",this,"launchBullet");
+		},
+		launchBullet: function(){
+			var locationX = this.p.x;
+			var locationY = this.p.y;
+			var speedX = 0;
+			var speedY = 0;
+			var margin = 5;
+			if(this.p.facing == "up"){
+				locationY -= (this.p.cy + margin);
+				speedY = - this.p.proyectileSpeed;
+			} else if(this.p.facing == "down"){
+				locationY += this.p.cy + margin;
+				speedY = this.p.proyectileSpeed;
+			} else if(this.p.facing == "left"){
+				locationX -= (this.p.cy + margin);
+				speedX = - this.p.proyectileSpeed;
+			} else if(this.p.facing == "right"){
+				locationX += this.p.cx + margin;
+				speedX = this.p.proyectileSpeed;
+			}
+			Q.stage().insert(new Q.Octorok_rok({x: locationX, y: locationY, vx: speedX, vy: speedY}));
+		}
+	});
+
+	Q.Sprite.extend("Octorok_rok",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "octorok_rok",
+				sprite: "projectile anim"
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, projectile');
+			this.on("hit",this,"collision");
+			this.play("fly_3");
+		},
+		collision: function(collision) {
+			this.destroy();
+
+			if(collision.obj.isA("Player")) { 
+				collision.obj.hit();
+				/*if(Q.state.get("lives") == 0)
+					Q.stageScene("endGame",1, { label: "You Win" });
+				else {
+					Q.state.inc("level",1);
+					Q.stageScene('level' + Q.state.get("level"));
+				}*/
+			}
 		}
 	});
 
@@ -247,7 +332,7 @@ window.addEventListener("load",function() {
 		button.on("click",function() {
 			Q.clearStages();
 			Q.state.reset({ level: 1, lives: 3 });
-			Q.stageScene('level' + Q.state.get("level"));
+			//Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("gameStats",1);
 		});
 
@@ -264,6 +349,7 @@ window.addEventListener("load",function() {
 		
 		Q.loadTMX("level1.tmx, sprites.json", function() {
 			Q.stageScene("level1");
+			Q.stageScene("gameStats",1);
 		});
 
 		//Q.debug = true;
