@@ -108,8 +108,6 @@ window.addEventListener("load",function() {
 		}*/
 	});
 
-
-
 /********************************/
 /************SPRITES*************/
 /********************************/
@@ -138,7 +136,6 @@ window.addEventListener("load",function() {
 				sprite: "player anim",
 				x: 150,			// You can also set additional properties that can
 				y: 380,				// be overridden on object creation
-				//gravity: 0,
 				scale: 1,
 				flip: false,
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT
@@ -151,6 +148,7 @@ window.addEventListener("load",function() {
 			// It also checks to make sure the player is on a horizontal surface before
 			// letting them jump.
 			this.add('2d, topdownControls, animation');
+			Q.stage().insert(new Q.SlashHitArea({x: this.p.x + 10, y:  this.p.y + 10}));
 
 			if (typeof this.p.minX !== 'undefined')
 				this.p.minX += this.p.cx;
@@ -177,8 +175,11 @@ window.addEventListener("load",function() {
 				this.customplay("stand_" + this.p.direction, "stand");
 			}
 
-			/*if(this.p.vx == 0)
-				this.p.x = Math.round(this.p.x);*/
+			if(this.p.vx == 0)
+				this.p.x = Math.round(this.p.x);
+
+			if(this.p.vy == 0)
+				this.p.y = Math.round(this.p.y);
 		},
 		customplay: function(newSheet, newAnim) {
 			if(newSheet.includes("_right")) {
@@ -194,6 +195,40 @@ window.addEventListener("load",function() {
 		},
 		hit: function() {
 			Q.state.dec("lives",1);
+		}
+	});
+
+	Q.Sprite.extend("SlashHitArea",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sx: 10,
+				sy: 10,
+				scale: 1,
+				flip: false,
+				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT,
+				sensor: true
+			});
+
+			// Add in pre-made components to get up and running quickly
+			// The `2d` component adds in default 2d collision detection
+			// and kinetics (velocity, gravity)
+			// The `topdownControls` its a custom controls module
+			// It also checks to make sure the player is on a horizontal surface before
+			// letting them jump.
+			this.on("sensor");
+
+		},
+		sensor: function(collision) {
+			console.log("slash");
+			if(!this.p.collected && collision.isA("Mario")) { 
+				this.p.collected = true;
+				Q.state.inc("score",200);
+				this.animate({y: this.p.y-50}, 0.3, Q.Easing.Linear, { callback: function(){ this.destroy() } });
+				//this.animate({y: this.p.y-50}, 0.3, Q.Easing.Quadratic.Out, { callback: function(){ this.destroy() } });
+			}
 		}
 	});
 
@@ -275,16 +310,20 @@ window.addEventListener("load",function() {
 		Q.stageTMX("level1.tmx",stage);
 
 		/*SPAWN PLAYER*/
-		var minX = 0, maxX = 60*34;
-		var player = stage.insert(new Q.Player({minX: minX, maxX: maxX}));
+		/*var minX = 0, maxX = 60*34;
+		var player = stage.insert(new Q.Player({minX: minX, maxX: maxX}));*/
+
+		
+		var player = stage.insert(new Q.Player({minX: 0, maxX: 1000}));
 
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
 
 		/*VIEWPORT*/
-		stage.add("viewport").follow(player,{ x: true, y: false },{ minX: minX, maxX: maxX });
-		stage.viewport.offsetX = -100;
-		stage.viewport.offsetY = 155;
-		stage.centerOn(150,380);
+		//stage.add("viewport").follow(player,{ x: true, y: true },{ minX: minX, maxX: maxX });
+		stage.add("viewport").follow(player,{ x: true, y: true },{ minX: 0, maxX: 1000 });
+		//stage.viewport.offsetX = -100;
+		//stage.viewport.offsetY = 155;
+		//stage.centerOn(150,380);
 	});
 
 	Q.UI.Text.extend("Lives",{
@@ -352,7 +391,7 @@ window.addEventListener("load",function() {
 			Q.stageScene("gameStats",1);
 		});
 
-		//Q.debug = true;
+		Q.debug = true;
 	});
 
 });
