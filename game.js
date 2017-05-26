@@ -148,7 +148,7 @@ window.addEventListener("load",function() {
 			// It also checks to make sure the player is on a horizontal surface before
 			// letting them jump.
 			this.add('2d, topdownControls, animation');
-			Q.stage().insert(new Q.SlashHitArea({x: this.p.x + 10, y:  this.p.y + 10}));
+			//Q.stage().insert(new Q.SlashHitArea({x: this.p.x + 10, y:  this.p.y + 10, player: this.p}));
 
 			if (typeof this.p.minX !== 'undefined')
 				this.p.minX += this.p.cx;
@@ -167,6 +167,11 @@ window.addEventListener("load",function() {
 				this.play("run_left");
 			}*/ 
 
+			if(this.p.slashing){
+				this.p.newSlash = false;
+				this.p.slashing = true;
+				console.log("slashing");
+			}
 
 			//if(this.p.stepping) {
 			if(this.p.vx != 0 | this.p.vy != 0) {
@@ -204,6 +209,8 @@ window.addEventListener("load",function() {
 		init: function(p) {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
+				sheet: "octorok_red",
+				sprite: "octorok anim",
 				sx: 10,
 				sy: 10,
 				scale: 1,
@@ -211,6 +218,8 @@ window.addEventListener("load",function() {
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT,
 				sensor: true
 			});
+
+			this.add("2d, animation")
 
 			// Add in pre-made components to get up and running quickly
 			// The `2d` component adds in default 2d collision detection
@@ -229,6 +238,10 @@ window.addEventListener("load",function() {
 				this.animate({y: this.p.y-50}, 0.3, Q.Easing.Linear, { callback: function(){ this.destroy() } });
 				//this.animate({y: this.p.y-50}, 0.3, Q.Easing.Quadratic.Out, { callback: function(){ this.destroy() } });
 			}
+		},
+		step: function(collision) {
+			this.p.x = this.p.player.x;
+			this.p.y = this.p.player.y;
 		}
 	});
 

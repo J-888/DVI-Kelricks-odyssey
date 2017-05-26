@@ -3,7 +3,7 @@
  <tileset firstgid="1" name="Overworld" tilewidth="16" tileheight="16" tilecount="1440" columns="40">
   <image source="../images/Overworld.png" width="640" height="576"/>
  </tileset>
- <layer name="water" width="50" height="50" visible="0">
+ <layer name="water" width="50" height="50">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -5011,7 +5011,7 @@
    <tile gid="607"/>
   </data>
  </layer>
- <layer name="walkable" width="50" height="50" visible="0">
+ <layer name="walkable" width="50" height="50">
   <data>
    <tile gid="365"/>
    <tile gid="369"/>
