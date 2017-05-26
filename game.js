@@ -415,7 +415,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
 		Q.compileSheets("octorok.png", "octorok.json");
 		
-		Q.loadTMX("level1.tmx, sprites.json", function() {
+		Q.loadTMX("level1.tmx", function() {
 			Q.stageScene("level1");
 			Q.stageScene("gameStats",1);
 		});
