@@ -28,7 +28,11 @@ window.addEventListener("load",function() {
 		stand: { frames: [0], rate: 1/4.5, flip: false },
 		stand_flipped: { frames: [0], rate: 1/4.5, flip: "x" },
 		move: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5},
-		move_flipped: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5, flip: "x" }
+		move_flipped: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5, flip: "x" },
+		slash_start: { frames: [0, 1, 2], rate: 1/15, loop: false, next: "slash_end"},
+		slash_start_flipped: { frames: [0, 1, 2], rate: 1/15, loop: false, flip: "x", next: "slash_end_flipped" },
+		slash_end: { frames: [3, 4, 5, 6, 7], rate: 1/15, loop: false, trigger: "stopSlashing"},
+		slash_end_flipped: { frames: [3, 4, 5, 6, 7], rate: 1/15, loop: false, trigger: "stopSlashing", flip: "x" },
 		/*run_right: { frames: [3,2,1], rate: 1/4.5 }, 
 		run_left: { frames: [17,16,15], rate:1/4.5 },
 		//fire_right: { frames: [9,10,10], next: 'stand_right', rate: 1/30, trigger: "fired" },
@@ -148,6 +152,7 @@ window.addEventListener("load",function() {
 			// It also checks to make sure the player is on a horizontal surface before
 			// letting them jump.
 			this.add('2d, topdownControls, animation');
+    		this.on("stopSlashing",this,"stopSlashing");
 			//Q.stage().insert(new Q.SlashHitArea({x: this.p.x + 10, y:  this.p.y + 10, player: this.p}));
 
 			if (typeof this.p.minX !== 'undefined')
@@ -167,17 +172,18 @@ window.addEventListener("load",function() {
 				this.play("run_left");
 			}*/ 
 
-			if(this.p.slashing){
+			if(this.p.newSlash){
 				this.p.newSlash = false;
-				this.p.slashing = true;
-				console.log("slashing");
+				this.p.midSlash = true;
+				this.customplay("slash_" + this.p.direction, "slash_start");
 			}
 
-			//if(this.p.stepping) {
-			if(this.p.vx != 0 | this.p.vy != 0) {
-				this.customplay("move_" + this.p.direction, "move");
-			} else {
-				this.customplay("stand_" + this.p.direction, "stand");
+			if(!this.p.midSlash) {
+				if(this.p.vx != 0 | this.p.vy != 0) {
+					this.customplay("move_" + this.p.direction, "move");
+				} else {
+					this.customplay("stand_" + this.p.direction, "stand");
+				}
 			}
 
 			if(this.p.vx == 0)
@@ -187,8 +193,13 @@ window.addEventListener("load",function() {
 				this.p.y = Math.round(this.p.y);
 		},
 		customplay: function(newSheet, newAnim) {
-			if(newSheet.includes("_right")) {
+			/*if(newSheet.includes("_right")) {
 				newSheet = newSheet.replace("_right", "_left");
+				newAnim += "_flipped";
+			} */
+
+			if(newSheet.includes("_left")) {
+				newSheet = newSheet.replace("_left", "_right");
 				newAnim += "_flipped";
 			} 
 			else
@@ -200,6 +211,10 @@ window.addEventListener("load",function() {
 		},
 		hit: function() {
 			Q.state.dec("lives",1);
+		},
+		stopSlashing: function() {
+			this.p.midSlash = false;			
+			this.p.justSlashEnd = true;
 		}
 	});
 
@@ -395,9 +410,10 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, octorok.png, octorok.json", function() {
-		Q.compileSheets("playerSheetTransparent.png","playerSpritesTransparent.json");
-		Q.compileSheets("octorok.png","octorok.json");
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json", function() {
+		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
+		Q.compileSheets("swordAttack.png", "swordAttack.json");
+		Q.compileSheets("octorok.png", "octorok.json");
 		
 		Q.loadTMX("level1.tmx, sprites.json", function() {
 			Q.stageScene("level1");
