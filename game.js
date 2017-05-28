@@ -299,6 +299,25 @@ window.addEventListener("load",function() {
 		}
 	});
 
+	Q.Sprite.extend("skeletonMovement",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "octorok_red",
+				sprite: "octorok anim",
+				proyectileSpeed: 100
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, defaultEnemy, aiShoot');
+			//this.play("run");
+    		//this.on("fired",this,"launchBullet");
+		}
+		
+	});
+
 	Q.Sprite.extend("Octorok_rok",{
 
 		// the init constructor is called on creation
@@ -410,10 +429,11 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
 		Q.compileSheets("octorok.png", "octorok.json");
+		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
 		
 		Q.loadTMX("level1.tmx", function() {
 			Q.stageScene("level1");
