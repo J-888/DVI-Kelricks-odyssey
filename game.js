@@ -29,6 +29,8 @@ window.addEventListener("load",function() {
 		stand_flipped: { frames: [0], rate: 1/4.5, flip: "x" },
 		move: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5},
 		move_flipped: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5, flip: "x" },
+		move_back: { frames: [9, 8, 7, 6, 5, 4, 3, 2, 1, 0], rate: 1/4.5},
+		move_back_flipped: { frames: [9, 8, 7, 6, 5, 4, 3, 2, 1, 0], rate: 1/4.5, flip: "x" },
 		slash_start: { frames: [0, 1, 2], rate: 1/15, loop: false, next: "slash_end", trigger: "inflictSlashDamage"},
 		slash_start_flipped: { frames: [0, 1, 2], rate: 1/15, loop: false, flip: "x", next: "slash_end_flipped", trigger: "inflictSlashDamage" },
 		slash_end: { frames: [3, 4, 5, 6, 7], rate: 1/15, loop: false, trigger: "stopSlashing"},
@@ -50,6 +52,11 @@ window.addEventListener("load",function() {
 		move_right: { frames: [6,7], rate: 1/4.5},
 		ready: { frames: [0], rate: 3/2, next: "shoot"},
 		shoot: { frames: [1], rate: 1/2, trigger: "fired", next: "ready"}
+	});
+
+	Q.animations('skeleton anim', {
+		move: { frames: [0,1,2,3,4,5,6,7,8,9], rate: 1/4.5, flip: "x"},
+		move_flipped: { frames: [0,1,2,3,4,5,6,7,8,9], rate: 1/4.5, flip: "x"}
 	});
 
 
@@ -242,10 +249,25 @@ window.addEventListener("load",function() {
 		},
 		loseHP: function(normalX, normalY) {
 			Q.state.dec("lives",1);
+
 			this.p.ignoreControls = true; 
+			this.p.newSlash = false;
+			this.p.midSlash = false;
+			//this.p.justSlashEnd = false;
+
 			var speedMult = -200;
 			this.p.vx = speedMult * normalX;
 			this.p.vy = speedMult * normalY;
+
+			/*if(normalX == 1)
+				this.customplay("move_right", "move_back");
+			else if(normalX == -1)
+				this.customplay("move_left", "move_back");
+			else if(normalY == 1)
+				this.customplay("move_down", "move_back_flipped");
+			else
+				this.customplay("move_up", "move_back");*/
+
 			this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
 		},
 		inflictSlashDamage: function() {
@@ -350,6 +372,40 @@ window.addEventListener("load",function() {
 		}
 	});
 
+	Q.Sprite.extend("Skeleton",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "move_down",
+				sprite: "skeleton anim",
+				proyectileSpeed: 100
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, tween, defaultEnemy, aiChase');
+			//this.play("run");
+		},
+		customplay: function(newSheet, newAnim) {
+			/*if(newSheet.includes("_right")) {
+				newSheet = newSheet.replace("_right", "_left");
+				newAnim += "_flipped";
+			} */
+
+			if(newSheet.includes("_left")) {
+				newSheet = newSheet.replace("_left", "_right");
+				newAnim += "_flipped";
+			} 
+			else
+				this.p.flip = false;
+
+			if(this.p.sheet != newSheet)
+				this.sheet(newSheet);
+			this.play(newAnim);
+		},
+	});
+
 
 /********************************/
 /************SCENES**************/
@@ -366,6 +422,7 @@ window.addEventListener("load",function() {
 		var player = stage.insert(new Q.Player({minX: 0, maxX: 1000}));
 
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
+		stage.insert(new Q.Skeleton({x: 400, y: 400}));
 
 		/*VIEWPORT*/
 		//stage.add("viewport").follow(player,{ x: true, y: true },{ minX: minX, maxX: maxX });
@@ -431,10 +488,11 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
 		Q.compileSheets("octorok.png", "octorok.json");
+		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
 		
 		Q.loadTMX("level1.tmx", function() {
 			Q.stageScene("level1");

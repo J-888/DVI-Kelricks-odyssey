@@ -1,5 +1,5 @@
 {
-	"movement_up":{"sx":498,"sy":0,"tileW":23,"tileH":34,"frames":10, "spacingX" : 0},
-	"movement_right":{"sx":269,"sy":0,"tileW":19,"tileH":34,"frames":10, "spacingX" : 0},
-	"movement_down":{"sx":0,"sy":0,"tileW":23,"tileH":34,"frames":10, "spacingX" : 0}
+	"skeleton_move_up":{"sx":498,"sy":0,"tileW":23,"tileH":34,"frames":10, "spacingX" : 0},
+	"skeleton_move_right":{"sx":269,"sy":0,"tileW":19,"tileH":34,"frames":10, "spacingX" : 0},
+	"skeleton_move_down":{"sx":0,"sy":0,"tileW":23,"tileH":34,"frames":10, "spacingX" : 0}
 }
