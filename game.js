@@ -7,8 +7,8 @@ window.addEventListener("load",function() {
 		.include("Sprites, Scenes, Input, 2D, Anim, Touch, UI, TMX")
 		.setup({ 
 			maximize: false, // Maximize only on touch devices
-			width: 320, // Set the default width to 320 pixels
-			height: 480, // Set the default height to 480 pixels
+			width: 640, // Set the default width to 320 pixels
+			height: 960, // Set the default height to 480 pixels
 			
 			//scaleToFit: true, // Scale the game to fit the screen of the player's device
 			scaleToFit2: true, // Scale (using integer factors) the game to fit the screen of the player's device
@@ -426,7 +426,9 @@ window.addEventListener("load",function() {
 
 		/*VIEWPORT*/
 		//stage.add("viewport").follow(player,{ x: true, y: true },{ minX: minX, maxX: maxX });
-		stage.add("viewport").follow(player,{ x: true, y: true },{ minX: 0, maxX: 1000 });
+		var vp = stage.add("viewport");
+		vp.follow(player,{ x: true, y: true },{ minX: 0, maxX: 1000 });
+		vp.viewport.scale = 1;
 		//stage.viewport.offsetX = -100;
 		//stage.viewport.offsetY = 155;
 		//stage.centerOn(150,380);
@@ -499,7 +501,7 @@ window.addEventListener("load",function() {
 			Q.stageScene("gameStats",1);
 		});
 
-		//Q.debug = true;
+		Q.debug = true;
 	});
 
 });
