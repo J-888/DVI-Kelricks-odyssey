@@ -1,0 +1,5 @@
+{
+	"skull_move_up":{"sx":81,"sy":0,"tileW":17,"tileH":24,"frames":3, "spacingX" : 0},
+	"skull_move_right":{"sx":172,"sy":0,"tileW":15,"tileH":24,"frames":2, "spacingX" : 0},
+	"skull_move_down":{"sx":0,"sy":0,"tileW":17,"tileH":24,"frames":3, "spacingX" : 0}
+}

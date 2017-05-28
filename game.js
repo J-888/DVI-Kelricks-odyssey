@@ -59,6 +59,11 @@ window.addEventListener("load",function() {
 		move_flipped: { frames: [0,1,2,3,4,5,6,7,8,9], rate: 1/4.5, flip: "x"}
 	});
 
+	Q.animations('skull anim', {
+		move: { frames: [0,1,2], rate: 1/4.5, flip: "x"},
+		move_flipped: { frames: [0,1,2], rate: 1/4.5, flip: "x"}
+	});
+
 
 	Q.animations('projectile anim', {
 		fly_3: { frames: [0,1,2], rate: 1/4.5}
@@ -406,6 +411,40 @@ window.addEventListener("load",function() {
 		},
 	});
 
+	Q.Sprite.extend("Skull",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "move_down",
+				sprite: "skull anim",
+				proyectileSpeed: 100
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, tween, defaultEnemy, aiChase');
+			//this.play("run");
+		},
+		customplay: function(newSheet, newAnim) {
+			/*if(newSheet.includes("_right")) {
+				newSheet = newSheet.replace("_right", "_left");
+				newAnim += "_flipped";
+			} */
+
+			if(newSheet.includes("_left")) {
+				newSheet = newSheet.replace("_left", "_right");
+				newAnim += "_flipped";
+			} 
+			else
+				this.p.flip = false;
+
+			if(this.p.sheet != newSheet)
+				this.sheet(newSheet);
+			this.play(newAnim);
+		},
+	});
+
 
 /********************************/
 /************SCENES**************/
@@ -423,6 +462,7 @@ window.addEventListener("load",function() {
 
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
 		stage.insert(new Q.Skeleton({x: 400, y: 400}));
+		stage.insert(new Q.Skull({x: 430, y: 430}));
 
 		/*VIEWPORT*/
 		//stage.add("viewport").follow(player,{ x: true, y: true },{ minX: minX, maxX: maxX });
@@ -490,11 +530,12 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
 		Q.compileSheets("octorok.png", "octorok.json");
 		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
+		Q.compileSheets("skullMovement.png", "skullMovement.json");
 		
 		Q.loadTMX("level1.tmx", function() {
 			Q.stageScene("level1");
