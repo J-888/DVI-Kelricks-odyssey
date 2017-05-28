@@ -65,27 +65,38 @@ window.addEventListener("load",function() {
 		added: function () {
 			this.entity.p.collisionMask = Q.SPRITE_ENEMY | Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT;
 			this.entity.p.type = Q.SPRITE_ENEMY;
+			this.entity.p.hp = 25;
 
 			this.entity.on("die",this.entity,"die");
 
-			this.entity.on("bump.left,bump.right,bump.bottom",function(collision) {
+			this.entity.on("bump.left,bump.right,bump.top,bump.bottom",function(collision) {
 				if(collision.obj.isA("Player")) { 
-					collision.obj.receiveDamage();
+					/*console.log("x: " + collision.normalX);
+					console.log("y: " + collision.normalY);*/
+					collision.obj.loseHP(collision.normalX, collision.normalY);
 				}
 			});
 
-			this.entity.on("bump.top",function(collision) {
+			/*this.entity.on("bump.top",function(collision) {
 				if(collision.obj.isA("Player")) { 
 					this.play("die", 1);
 					collision.obj.p.vy = -300;
 					this.p.vx = 0;
 				}
-			});
+			});*/
 		},
-		extend: {
+		extend: {	
+			touchPlayer: function(col) {
+				if(collision.obj.isA("Player"))
+					player.loseHP()
+			},
+			loseHP: function(damage) {
+				this.p.hp = Math.max(hp - damage, 0);
+				if(this.p.hp == 0)
+					this.die();
+			},
 			die: function(p) {
 				this.destroy();
-				Q.state.inc("score",200);
 			}
 		}
 	});
@@ -151,7 +162,7 @@ window.addEventListener("load",function() {
 			// The `topdownControls` its a custom controls module
 			// It also checks to make sure the player is on a horizontal surface before
 			// letting them jump.
-			this.add('2d, topdownControls, animation');
+			this.add('2d, topdownControls, animation, tween');
     		this.on("stopSlashing",this,"stopSlashing");
 			//Q.stage().insert(new Q.SlashHitArea({x: this.p.x + 10, y:  this.p.y + 10, player: this.p}));
 
@@ -209,54 +220,23 @@ window.addEventListener("load",function() {
 				this.sheet(newSheet);
 			this.play(newAnim);
 		},
-		hit: function() {
+		loseHP: function(normalX, normalY) {
 			Q.state.dec("lives",1);
+			this.p.ignoreControls = true; 
+			var speedMult = -200;
+			this.p.vx = speedMult * normalX;
+			this.p.vy = speedMult * normalY;
+			this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
+
+			/*this.p.vx = 0;
+			this.p.vy = 0;
+			xDesp = this.p.x + (speedMult * normalX);
+			yDesp = this.p.y + (speedMult * normalY);
+			this.animate({ x: xDesp, y: yDesp, callback: function() { console.log("0"); }});*/
 		},
 		stopSlashing: function() {
 			this.p.midSlash = false;			
 			this.p.justSlashEnd = true;
-		}
-	});
-
-	Q.Sprite.extend("SlashHitArea",{
-
-		// the init constructor is called on creation
-		init: function(p) {
-			// You can call the parent's constructor with this._super(..)
-			this._super(p, {
-				sheet: "octorok_red",
-				sprite: "octorok anim",
-				sx: 10,
-				sy: 10,
-				scale: 1,
-				flip: false,
-				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT,
-				sensor: true
-			});
-
-			this.add("2d, animation")
-
-			// Add in pre-made components to get up and running quickly
-			// The `2d` component adds in default 2d collision detection
-			// and kinetics (velocity, gravity)
-			// The `topdownControls` its a custom controls module
-			// It also checks to make sure the player is on a horizontal surface before
-			// letting them jump.
-			this.on("sensor");
-
-		},
-		sensor: function(collision) {
-			console.log("slash");
-			if(!this.p.collected && collision.isA("Mario")) { 
-				this.p.collected = true;
-				Q.state.inc("score",200);
-				this.animate({y: this.p.y-50}, 0.3, Q.Easing.Linear, { callback: function(){ this.destroy() } });
-				//this.animate({y: this.p.y-50}, 0.3, Q.Easing.Quadratic.Out, { callback: function(){ this.destroy() } });
-			}
-		},
-		step: function(collision) {
-			this.p.x = this.p.player.x;
-			this.p.y = this.p.player.y;
 		}
 	});
 
@@ -318,13 +298,7 @@ window.addEventListener("load",function() {
 			this.destroy();
 
 			if(collision.obj.isA("Player")) { 
-				collision.obj.hit();
-				/*if(Q.state.get("lives") == 0)
-					Q.stageScene("endGame",1, { label: "You Win" });
-				else {
-					Q.state.inc("level",1);
-					Q.stageScene('level' + Q.state.get("level"));
-				}*/
+				collision.obj.loseHP(collision.normalX, collision.normalY);
 			}
 		}
 	});
