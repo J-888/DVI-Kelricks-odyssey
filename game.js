@@ -29,8 +29,8 @@ window.addEventListener("load",function() {
 		stand_flipped: { frames: [0], rate: 1/4.5, flip: "x" },
 		move: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5},
 		move_flipped: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], rate: 1/4.5, flip: "x" },
-		slash_start: { frames: [0, 1, 2], rate: 1/15, loop: false, next: "slash_end"},
-		slash_start_flipped: { frames: [0, 1, 2], rate: 1/15, loop: false, flip: "x", next: "slash_end_flipped" },
+		slash_start: { frames: [0, 1, 2], rate: 1/15, loop: false, next: "slash_end", trigger: "inflictSlashDamage"},
+		slash_start_flipped: { frames: [0, 1, 2], rate: 1/15, loop: false, flip: "x", next: "slash_end_flipped", trigger: "inflictSlashDamage" },
 		slash_end: { frames: [3, 4, 5, 6, 7], rate: 1/15, loop: false, trigger: "stopSlashing"},
 		slash_end_flipped: { frames: [3, 4, 5, 6, 7], rate: 1/15, loop: false, trigger: "stopSlashing", flip: "x" },
 		/*run_right: { frames: [3,2,1], rate: 1/4.5 }, 
@@ -90,10 +90,29 @@ window.addEventListener("load",function() {
 				if(collision.obj.isA("Player"))
 					player.loseHP()
 			},
-			loseHP: function(damage) {
-				this.p.hp = Math.max(hp - damage, 0);
+			loseHP: function(damage, playerDir) {
+				this.p.hp = Math.max(this.p.hp - damage, 0);
 				if(this.p.hp == 0)
 					this.die();
+				else{	//knockback					
+					this.p.ignoreControls = true; 
+					var speedMult = -200;
+					var normalX = 0;
+					var normalY = 0;
+
+					if(playerDir == "up")
+						normalY = +1;
+					else if(playerDir == "down")
+						normalY = -1;
+					else if(playerDir == "left")
+						normalX = +1;
+					else if(playerDir == "right")
+						normalX = -1;
+
+					this.p.vx = speedMult * normalX;
+					this.p.vy = speedMult * normalY;
+					this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
+				}
 			},
 			die: function(p) {
 				this.destroy();
@@ -164,6 +183,7 @@ window.addEventListener("load",function() {
 			// letting them jump.
 			this.add('2d, topdownControls, animation, tween');
     		this.on("stopSlashing",this,"stopSlashing");
+    		this.on("inflictSlashDamage",this,"inflictSlashDamage");
 			//Q.stage().insert(new Q.SlashHitArea({x: this.p.x + 10, y:  this.p.y + 10, player: this.p}));
 
 			if (typeof this.p.minX !== 'undefined')
@@ -227,12 +247,39 @@ window.addEventListener("load",function() {
 			this.p.vx = speedMult * normalX;
 			this.p.vy = speedMult * normalY;
 			this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
+		},
+		inflictSlashDamage: function() {
+			var swordDamage = 10;
+			var areaRadius = 15;
+			var areaCenterX = this.p.x;
+			var areaCenterY = this.p.y;
+			if(this.p.direction == "up"){
+				areaCenterY -= this.p.cy + areaRadius;
+			} else if(this.p.direction == "down"){
+				areaCenterY += this.p.cy + areaRadius;
+			} else if(this.p.direction == "left"){
+				areaCenterX -= this.p.cx + areaRadius;
+			} else if(this.p.direction == "right"){
+				areaCenterX += this.p.cx + areaRadius;
+			}
 
-			/*this.p.vx = 0;
-			this.p.vy = 0;
-			xDesp = this.p.x + (speedMult * normalX);
-			yDesp = this.p.y + (speedMult * normalY);
-			this.animate({ x: xDesp, y: yDesp, callback: function() { console.log("0"); }});*/
+			var minX = areaCenterX - areaRadius;
+			var maxX = areaCenterX + areaRadius;
+			var minY = areaCenterY - areaRadius;
+			var maxY = areaCenterY + areaRadius;
+
+			var dir = this.p.direction;
+
+			var allEnemies = Q(".defaultEnemy");
+			allEnemies.each(function(range) {
+				var minX = range[0];
+				var maxX = range[1];
+				var minY = range[2];
+				var maxY = range[3];
+				if(this.p.x >= minX && this.p.x <= maxX && this.p.y >= minY && this.p.y <= maxY) {
+					this.loseHP(swordDamage, dir);
+				}
+			}, [minX, maxX, minY, maxY], swordDamage, dir); 
 		},
 		stopSlashing: function() {
 			this.p.midSlash = false;			
@@ -252,7 +299,7 @@ window.addEventListener("load",function() {
 			});
 
 			// Add in pre-made components to get up and running quickly
-			this.add('2d, animation, defaultEnemy, aiShoot');
+			this.add('2d, animation, tween, defaultEnemy, aiShoot');
 			//this.play("run");
     		this.on("fired",this,"launchBullet");
 		},
