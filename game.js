@@ -441,7 +441,7 @@ window.addEventListener("load",function() {
 			Q.stageScene("gameStats",1);
 		});
 
-		Q.debug = true;
+		//Q.debug = true;
 	});
 
 });
