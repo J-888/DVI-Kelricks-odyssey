@@ -4,6 +4,9 @@
   <image source="../images/Overworld.png" width="640" height="576"/>
  </tileset>
  <layer name="water" width="50" height="50">
+  <properties>
+   <property name="type" type="int" value="0"/>
+  </properties>
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -2508,6 +2511,9 @@
   </data>
  </layer>
  <layer name="fall" width="50" height="50">
+  <properties>
+   <property name="type" type="int" value="0"/>
+  </properties>
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -5012,6 +5018,9 @@
   </data>
  </layer>
  <layer name="walkable" width="50" height="50">
+  <properties>
+   <property name="type" type="int" value="0"/>
+  </properties>
   <data>
    <tile gid="365"/>
    <tile gid="369"/>
