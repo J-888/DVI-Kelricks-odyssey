@@ -448,7 +448,7 @@ window.addEventListener("load",function() {
 
 	Q.UI.Text.extend("Lives",{
 		init: function(p) {
-			this._super({ label: "", x: Q.width/2, y: Q.height/2, weight: 100, size: 20, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "right" });
+			this._super({ label: "", x: 10-Q.width/2, y: 10-Q.height/2, weight: 100, size: 30, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "left" });
 			Q.state.on("change.lives",this,"lives");
 			this.lives(Q.state.get("lives"));
 		},
@@ -461,8 +461,13 @@ window.addEventListener("load",function() {
 	});
 
 	Q.scene("gameStats",function(stage) {
+		//var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0)" }));
+		//var livesLabel = container.insert(new Q.Lives());
+
 		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0)" }));
+		var label = container.insert(new Q.UI.Text({x:Q.width/2, y: Q.height/2, weight: 0, size: 0, family: "SuperMario", color: "#FFFFFF", outlineWidth: 4, label: "." }));
 		var livesLabel = container.insert(new Q.Lives());
+
 	});
 
 	Q.scene('endGame',function(stage) {
@@ -484,14 +489,18 @@ window.addEventListener("load",function() {
 	});
 
 	Q.scene('titleScreen',function(stage) {
+		var imgw = Q.assets["mainTitle.jpg"].width;
+		var imgh = Q.assets["mainTitle.jpg"].height;
+		var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+
 		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
-		var button = container.insert(new Q.UI.Button({ asset: "mainTitle.png", x: 0, y: 0, keyActionName:['confirm', 'fire', 'action'] }))
+		var button = container.insert(new Q.UI.Button({ asset: "mainTitle.jpg", x: 0, y: 0, scale: imgScale, keyActionName:['confirm', 'fire', 'action'] }))
 		var label = container.insert(new Q.UI.Text({x:0, y: 70, weight: 100, size: 24, family: "SuperMario", color: "#FFFFFF", outlineWidth: 4, label: "Start" }));
 		
 		button.on("click",function() {
 			Q.clearStages();
 			Q.state.reset({ level: 1, lives: 3 });
-			//Q.stageScene('level' + Q.state.get("level"));
+			Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("gameStats",1);
 		});
 
@@ -502,7 +511,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
 		Q.compileSheets("octorok.png", "octorok.json");
@@ -510,12 +519,12 @@ window.addEventListener("load",function() {
 		Q.compileSheets("skullMovement.png", "skullMovement.json");
 		
 		Q.loadTMX("level1.tmx", function() {
-			Q.stageScene("level1");
-			Q.stageScene("gameStats", 1);
-			//Q.stageScene('titleScreen');
+			/*Q.stageScene("level1");
+			Q.stageScene("gameStats", 1);*/
+			Q.stageScene('titleScreen');
 		});
 
-		Q.debug = true;
+		//Q.debug = true;
 	});
 
 });
