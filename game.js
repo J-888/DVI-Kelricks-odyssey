@@ -154,6 +154,28 @@ window.addEventListener("load",function() {
 		}*/
 	});
 
+		Q.component('customPlayAnim', {
+		extend:{
+			customplay: function(newSheet, newAnim) {
+				/*if(newSheet.includes("_right")) {
+					newSheet = newSheet.replace("_right", "_left");
+					newAnim += "_flipped";
+				} */
+
+				if(newSheet.includes("_left")) {
+					newSheet = newSheet.replace("_left", "_right");
+					newAnim += "_flipped";
+				} 
+				else
+					this.p.flip = false;
+
+				if(this.p.sheet != newSheet)
+					this.sheet(newSheet);
+				this.play(newAnim);
+			}		
+		}
+	});
+
 /********************************/
 /************SPRITES*************/
 /********************************/
@@ -193,7 +215,7 @@ window.addEventListener("load",function() {
 			// The `topdownControls` its a custom controls module
 			// It also checks to make sure the player is on a horizontal surface before
 			// letting them jump.
-			this.add('2d, topdownControls, animation, tween');
+			this.add('2d, topdownControls, animation, tween, customPlayAnim');
     		this.on("stopSlashing",this,"stopSlashing");
     		this.on("inflictSlashDamage",this,"inflictSlashDamage");
 			//Q.stage().insert(new Q.SlashHitArea({x: this.p.x + 10, y:  this.p.y + 10, player: this.p}));
@@ -234,23 +256,6 @@ window.addEventListener("load",function() {
 
 			if(this.p.vy == 0)
 				this.p.y = Math.round(this.p.y);
-		},
-		customplay: function(newSheet, newAnim) {
-			/*if(newSheet.includes("_right")) {
-				newSheet = newSheet.replace("_right", "_left");
-				newAnim += "_flipped";
-			} */
-
-			if(newSheet.includes("_left")) {
-				newSheet = newSheet.replace("_left", "_right");
-				newAnim += "_flipped";
-			} 
-			else
-				this.p.flip = false;
-
-			if(this.p.sheet != newSheet)
-				this.sheet(newSheet);
-			this.play(newAnim);
 		},
 		loseHP: function(normalX, normalY) {
 			Q.state.dec("lives",1);
@@ -384,31 +389,13 @@ window.addEventListener("load",function() {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
 				sheet: "move_down",
-				sprite: "skeleton anim",
-				proyectileSpeed: 100
+				sprite: "skeleton anim"
 			});
 
 			// Add in pre-made components to get up and running quickly
-			this.add('2d, animation, tween, defaultEnemy, aiChase');
+			this.add('2d, animation, tween, defaultEnemy, aiChase, customPlayAnim');
 			//this.play("run");
-		},
-		customplay: function(newSheet, newAnim) {
-			/*if(newSheet.includes("_right")) {
-				newSheet = newSheet.replace("_right", "_left");
-				newAnim += "_flipped";
-			} */
-
-			if(newSheet.includes("_left")) {
-				newSheet = newSheet.replace("_left", "_right");
-				newAnim += "_flipped";
-			} 
-			else
-				this.p.flip = false;
-
-			if(this.p.sheet != newSheet)
-				this.sheet(newSheet);
-			this.play(newAnim);
-		},
+		}
 	});
 
 	Q.Sprite.extend("Skull",{
@@ -418,31 +405,13 @@ window.addEventListener("load",function() {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
 				sheet: "move_down",
-				sprite: "skull anim",
-				proyectileSpeed: 100
+				sprite: "skull anim"
 			});
 
 			// Add in pre-made components to get up and running quickly
-			this.add('2d, animation, tween, defaultEnemy, aiChase');
+			this.add('2d, animation, tween, defaultEnemy, aiChase, customPlayAnim');
 			//this.play("run");
-		},
-		customplay: function(newSheet, newAnim) {
-			/*if(newSheet.includes("_right")) {
-				newSheet = newSheet.replace("_right", "_left");
-				newAnim += "_flipped";
-			} */
-
-			if(newSheet.includes("_left")) {
-				newSheet = newSheet.replace("_left", "_right");
-				newAnim += "_flipped";
-			} 
-			else
-				this.p.flip = false;
-
-			if(this.p.sheet != newSheet)
-				this.sheet(newSheet);
-			this.play(newAnim);
-		},
+		}
 	});
 
 
