@@ -439,16 +439,16 @@ window.addEventListener("load",function() {
 		/*VIEWPORT*/
 		//stage.add("viewport").follow(player,{ x: true, y: true },{ minX: minX, maxX: maxX });
 		var vp = stage.add("viewport");
-		vp.follow(player,{ x: true, y: true },{ minX: 0, maxX: 1000 });
+		vp.follow(player,{ x: true, y: true },{/* minX: 0, maxX: 1000 */});
 		vp.viewport.scale = 1;
 		//stage.viewport.offsetX = -100;
 		//stage.viewport.offsetY = 155;
-		//stage.centerOn(150,380);
+		stage.centerOn(150,380);
 	});
 
 	Q.UI.Text.extend("Lives",{
 		init: function(p) {
-			this._super({ label: "", x: Q.width/2-10, y: 10-Q.height/2, weight: 100, size: 20, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "right" });
+			this._super({ label: "", x: Q.width/2, y: Q.height/2, weight: 100, size: 20, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "right" });
 			Q.state.on("change.lives",this,"lives");
 			this.lives(Q.state.get("lives"));
 		},
@@ -511,7 +511,8 @@ window.addEventListener("load",function() {
 		
 		Q.loadTMX("level1.tmx", function() {
 			Q.stageScene("level1");
-			Q.stageScene("gameStats",1);
+			Q.stageScene("gameStats", 1);
+			//Q.stageScene('titleScreen');
 		});
 
 		Q.debug = true;
