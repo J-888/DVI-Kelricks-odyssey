@@ -169,6 +169,7 @@ window.addEventListener("load",function() {
 				else
 					this.p.flip = false;
 
+				newSheet = this.p.name + "_" + newSheet;
 				if(this.p.sheet != newSheet)
 					this.sheet(newSheet);
 				this.play(newAnim);
@@ -200,7 +201,8 @@ window.addEventListener("load",function() {
 		init: function(p) {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
-				sheet: "stand_down",	// Setting a sprite sheet sets sprite width and height
+				name: "player",
+				sheet: "player_stand_down",	// Setting a sprite sheet sets sprite width and height
 				sprite: "player anim",
 				x: 150,			// You can also set additional properties that can
 				y: 380,				// be overridden on object creation
@@ -325,6 +327,7 @@ window.addEventListener("load",function() {
 		init: function(p) {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
+				name: "octorok",
 				sheet: "octorok_red",
 				sprite: "octorok anim",
 				proyectileSpeed: 100
@@ -388,13 +391,13 @@ window.addEventListener("load",function() {
 		init: function(p) {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
-				sheet: "move_down",
+				name: "skeleton",
+				sheet: "skeleton_move_down",
 				sprite: "skeleton anim"
 			});
 
 			// Add in pre-made components to get up and running quickly
 			this.add('2d, animation, tween, defaultEnemy, aiChase, customPlayAnim');
-			//this.play("run");
 		}
 	});
 
@@ -404,13 +407,13 @@ window.addEventListener("load",function() {
 		init: function(p) {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
-				sheet: "move_down",
+				name: "skull",
+				sheet: "skull_move_down",
 				sprite: "skull anim"
 			});
 
 			// Add in pre-made components to get up and running quickly
 			this.add('2d, animation, tween, defaultEnemy, aiChase, customPlayAnim');
-			//this.play("run");
 		}
 	});
 

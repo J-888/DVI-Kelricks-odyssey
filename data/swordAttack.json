@@ -1,5 +1,5 @@
 {
-	"slash_up":{"sx":610,"sy":0,"tileW":32,"tileH":36,"frames":8, "spacingX" : 0},
-	"slash_right":{"sx":295,"sy":0,"tileW":35,"tileH":36,"frames":8, "spacingX" : 0},
-	"slash_down":{"sx":0,"sy":0,"tileW":33,"tileH":36,"frames":8, "spacingX" : 0}
+	"player_slash_up":{"sx":610,"sy":0,"tileW":32,"tileH":36,"frames":8, "spacingX" : 0},
+	"player_slash_right":{"sx":295,"sy":0,"tileW":35,"tileH":36,"frames":8, "spacingX" : 0},
+	"player_slash_down":{"sx":0,"sy":0,"tileW":33,"tileH":36,"frames":8, "spacingX" : 0}
 }
