@@ -375,9 +375,9 @@ window.addEventListener("load",function() {
 				if(Q.state.get("lives") == 0)
 					Q.state.inc("lives",1);
 
-				this.p.ignoreControls = true; 
-				this.p.newSlash = false;
-				this.p.midSlash = false;
+				this.p.ignoreControlsSoft = true; 
+				//this.p.newSlash = false;
+				//this.p.midSlash = false;
 				//this.p.justSlashEnd = false;
 
 				var speedMult = -200;
@@ -393,7 +393,7 @@ window.addEventListener("load",function() {
 				else
 					this.customplay("move_up", "move_back");*/
 
-				this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
+				this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControlsSoft = false; }});
 			}
 		},
 		inflictSlashDamage: function() {
