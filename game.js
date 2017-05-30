@@ -90,6 +90,10 @@ window.addEventListener("load",function() {
 	Q.animations('bombThrown anim', {
 		burn: { frames: [0], rate: 2, loop: false, trigger: "explode"}
 	});
+
+	Q.animations('explosion anim', {
+		explode: { frames: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14], rate: 1/10, loop: false, trigger: "endExplosion"}
+	});
 	
 /********************************/
 /***********COMPONENTS***********/
@@ -544,7 +548,7 @@ window.addEventListener("load",function() {
 
 	});
 
-		Q.Sprite.extend("Bomb",{
+	Q.Sprite.extend("Bomb",{
 
 		// the init constructor is called on creation
 		init: function(p) {
@@ -562,6 +566,9 @@ window.addEventListener("load",function() {
 		},
 		explode: function(collision) {
 			this.destroy();
+
+
+			Q.stage().insert(new Q.Explosion({x: this.p.x, y: this.p.y}));
 
 			var bombDamage = 1000;
 			var areaRadius = 15;
@@ -584,6 +591,28 @@ window.addEventListener("load",function() {
 					this.loseHP(bombDamage, dir);
 				}
 			}, [minX, maxX, minY, maxY], bombDamage); 
+		}
+
+	});
+
+	Q.Sprite.extend("Explosion",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "explosion",
+				sprite: "explosion anim",
+				type: Q.SPRITE_FRIENDLY | Q.SPRITE_ACTIVE |Q.SPRITE_ENEMY
+			});
+
+			this.add('animation');
+			this.play("explode");
+
+			this.on("endExplosion",this,"endExplosion");
+		},
+		endExplosion: function(p) {
+			this.destroy();
 		}
 
 	});
@@ -629,10 +658,6 @@ window.addEventListener("load",function() {
 		/*CHESTS*/
 		stage.insert(new Q.Chest({x: 600, y: 300, chestContent:"bow"}));
 		stage.insert(new Q.Chest({x: 650, y: 300, chestContent:"bomb"}));
-
-
-		stage.insert(new Q.Bomb({x: 650, y: 350}));
-
 
 		/*SPAWN ENEMIES*/
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
@@ -736,7 +761,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -746,6 +771,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("overworld.png", "overworld.json");
 		Q.compileSheets("chest.png", "chest.json");
 		Q.compileSheets("bombThrown.png", "bombThrown.json");
+		Q.compileSheets("explosion.png", "explosion.json");
 		
 		Q.loadTMX("level1.tmx", function() {
 			/*Q.stageScene("level1");
