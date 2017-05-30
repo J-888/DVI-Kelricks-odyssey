@@ -68,6 +68,24 @@ window.addEventListener("load",function() {
 	Q.animations('projectile anim', {
 		fly_3: { frames: [0,1,2], rate: 1/4.5}
 	});
+
+	Q.animations('octorok anim', {
+		move_down: { frames: [0,1], rate: 1/4.5},
+		move_up: { frames: [2,3], rate: 1/4.5},
+		move_left: { frames: [4,5], rate: 1/4.5},
+		move_right: { frames: [6,7], rate: 1/4.5},
+		ready: { frames: [0], rate: 3/2, next: "shoot"},
+		shoot: { frames: [1], rate: 1/2, trigger: "fired", next: "ready"}
+	});
+
+	Q.animations('chest anim', {
+		closed: { frames: [0], rate: 1/4.5, loop: false},
+		opening: { frames: [1,2,3], rate: 1/2, loop: false, trigger: "showContent"},
+		show_content_: { frames: [3], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_bow: { frames: [4], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_bomb: { frames: [5], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
+		opened: { frames: [3], rate: 1/4.5, loop: false}
+	});
 	
 /********************************/
 /***********COMPONENTS***********/
@@ -226,6 +244,7 @@ window.addEventListener("load",function() {
 				//y: 262,				// be overridden on object creation
 				scale: 1,
 				flip: false,
+				items: [],
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT
 			});
 
@@ -439,6 +458,43 @@ window.addEventListener("load",function() {
 		}
 	});
 
+	Q.Sprite.extend("Chest",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "chest",
+				sprite: "chest anim",
+				chestContent: "",
+				opened: false,
+				points: [[-14,1],[14,1],[14,30],[-14,30]],
+				type: Q.SPRITE_FRIENDLY
+			});
+
+			this.add('2d, animation');
+			this.play("closed");
+
+			this.on("hit",this,"collision");
+			this.on("showContent",this,"showContent");
+			this.on("giveReward",this,"giveReward");
+		},
+		collision: function(collision) {
+			if(!this.p.opened && collision.obj.isA("Player")) { 
+				this.p.opened = true;
+				this.play("opening");
+				this.p.toPlayer = collision.obj;
+			}
+		},
+		showContent: function(collision) {
+			this.play("show_content_" + this.p.chestContent);
+		},
+		giveReward: function(collision) {
+			this.p.toPlayer.p.items.push(this.chestContent);
+		}
+
+	});
+
 	Q.Sprite.extend("Gate",{
 
 		// the init constructor is called on creation
@@ -477,6 +533,9 @@ window.addEventListener("load",function() {
 		/*SPAWN PLAYER*/
 		var player = stage.insert(new Q.Player({x: 520, y: 260}));
 
+		/*CHESTS*/
+		stage.insert(new Q.Chest({x: 600, y: 300, chestContent:"bow"}));
+
 		/*SPAWN ENEMIES*/
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
 		stage.insert(new Q.Skeleton({x: 400, y: 400}));
@@ -503,6 +562,24 @@ window.addEventListener("load",function() {
 				this.p.label = "♥".repeat(lives);
 			else
 				this.p.label = lives+"x♥";
+		}
+	});
+
+	Q.UI.Text.extend("ItemHUD",{
+		init: function(p) {
+			this._super({ label: "", x: 10-Q.width/2, y: 10-Q.height/2, weight: 100, size: 10, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "left" });
+			Q.state.on("change.currentItem",this,"currentItem");
+			this.lives(Q.state.get("currentItem"));
+		},
+		currentItem: function(currentItem) {
+			var player = Q("Player").first();
+        	if(player != undefined) {
+        		var current = "";
+        		if(player.items.lenght != 0)
+					current= player.items[currentItem%player.items.lenght];
+
+				this.p.label = current;
+			}
 		}
 	});
 
@@ -545,7 +622,7 @@ window.addEventListener("load",function() {
 		
 		button.on("click",function() {
 			Q.clearStages();
-			Q.state.reset({ level: 1, lives: 5 });
+			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("gameStats",1);
 		});
@@ -557,7 +634,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -565,6 +642,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
 		Q.compileSheets("skullMovement.png", "skullMovement.json");
 		Q.compileSheets("overworld.png", "overworld.json");
+		Q.compileSheets("chest.png", "chest.json");
 		
 		Q.loadTMX("level1.tmx", function() {
 			/*Q.stageScene("level1");
@@ -572,7 +650,7 @@ window.addEventListener("load",function() {
 			Q.stageScene('titleScreen');
 		});
 
-		//Q.debug = true;
+		Q.debug = true;
 	});
 
 });
