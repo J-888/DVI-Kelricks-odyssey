@@ -60,8 +60,8 @@ window.addEventListener("load",function() {
 	});
 
 	Q.animations('skull anim', {
-		move: { frames: [0,1,2], rate: 1/4.5, flip: "x"},
-		move_flipped: { frames: [0,1,2], rate: 1/4.5, flip: "x"}
+		move: { frames: [0,1], rate: 1/4.5, flip: "x"},
+		move_flipped: { frames: [0,1], rate: 1/4.5, flip: "x"}
 	});
 
 
@@ -261,6 +261,10 @@ window.addEventListener("load",function() {
 		},
 		loseHP: function(normalX, normalY) {
 			Q.state.dec("lives",1);
+			
+			/********GOD MODE***********/
+			if(Q.state.get("lives") == 0)
+				Q.state.inc("lives",1);
 
 			this.p.ignoreControls = true; 
 			this.p.newSlash = false;
@@ -284,7 +288,7 @@ window.addEventListener("load",function() {
 		},
 		inflictSlashDamage: function() {
 			var swordDamage = 10;
-			var areaRadius = 15;
+			var areaRadius = 10;
 			var areaCenterX = this.p.x;
 			var areaCenterY = this.p.y;
 			if(this.p.direction == "up"){
@@ -310,7 +314,7 @@ window.addEventListener("load",function() {
 				var maxX = range[1];
 				var minY = range[2];
 				var maxY = range[3];
-				if(this.p.x >= minX && this.p.x <= maxX && this.p.y >= minY && this.p.y <= maxY) {
+				if(this.p.x+this.p.cx >= minX && this.p.x-this.p.cx <= maxX && this.p.y+this.p.cy >= minY && this.p.y-this.p.cy <= maxY) {
 					this.loseHP(swordDamage, dir);
 				}
 			}, [minX, maxX, minY, maxY], swordDamage, dir); 
@@ -499,7 +503,7 @@ window.addEventListener("load",function() {
 		
 		button.on("click",function() {
 			Q.clearStages();
-			Q.state.reset({ level: 1, lives: 3 });
+			Q.state.reset({ level: 1, lives: 5 });
 			Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("gameStats",1);
 		});
