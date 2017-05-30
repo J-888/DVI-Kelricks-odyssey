@@ -35,6 +35,8 @@ window.addEventListener("load",function() {
 		slash_start_flipped: { frames: [0, 1, 2], rate: 1/15, loop: false, flip: "x", next: "slash_end_flipped", trigger: "inflictSlashDamage" },
 		slash_end: { frames: [3, 4, 5, 6, 7], rate: 1/15, loop: false, trigger: "stopSlashing"},
 		slash_end_flipped: { frames: [3, 4, 5, 6, 7], rate: 1/15, loop: false, trigger: "stopSlashing", flip: "x" },
+		shield: { frames: [0], rate: 1, loop: true},
+		shield_flipped: { frames: [0], rate: 1, loop: true, flip: "x" },
 		/*run_right: { frames: [3,2,1], rate: 1/4.5 }, 
 		run_left: { frames: [17,16,15], rate:1/4.5 },
 		//fire_right: { frames: [9,10,10], next: 'stand_right', rate: 1/30, trigger: "fired" },
@@ -84,6 +86,7 @@ window.addEventListener("load",function() {
 		show_content_: { frames: [3], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
 		show_content_bow: { frames: [4], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
 		show_content_bomb: { frames: [5], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_shield: { frames: [6], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
 		opened: { frames: [3], rate: 1/4.5, loop: false}
 	});
 
@@ -111,7 +114,7 @@ window.addEventListener("load",function() {
 				if(collision.obj.isA("Player")) { 
 					/*console.log("x: " + collision.normalX);
 					console.log("y: " + collision.normalY);*/
-					collision.obj.loseHP(collision.normalX, collision.normalY);
+					collision.obj.loseHP(collision.normalX, collision.normalY, this);
 				}
 			});
 
@@ -124,10 +127,6 @@ window.addEventListener("load",function() {
 			});*/
 		},
 		extend: {	
-			touchPlayer: function(col) {
-				if(collision.obj.isA("Player"))
-					player.loseHP()
-			},
 			loseHP: function(damage, playerDir) {
 				this.p.hp = Math.max(this.p.hp - damage, 0);
 				if(this.p.hp == 0)
@@ -285,12 +284,15 @@ window.addEventListener("load",function() {
 				this.play("run_left");
 			}*/ 
 
+
+			this.p.shielding = false;
+
 			if(this.p.justPressedAction && this.p.items.length != 0){
+
 				if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bow"){
 					console.log("shoot arrow");
 				}
 				else if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bomb"){
-					console.log("throw bomb");
 					var grav = 100;
 					var throwSpeed = 50;
 					var margin = 5;
@@ -321,17 +323,26 @@ window.addEventListener("load",function() {
 				}
 			}
 
-			if(this.p.newSlash){
-				this.p.newSlash = false;
-				this.p.midSlash = true;
-				this.customplay("slash_" + this.p.direction, "slash_start");
+			if(this.p.holdingAction && this.p.items.length != 0){
+				if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "shield"){
+					this.p.shielding = true;
+					this.customplay("shield_" + this.p.direction, "shield");
+				}
 			}
 
-			if(!this.p.midSlash) {
-				if(this.p.vx != 0 | this.p.vy != 0) {
-					this.customplay("move_" + this.p.direction, "move");
-				} else {
-					this.customplay("stand_" + this.p.direction, "stand");
+			if(!this.p.shielding){
+				if(this.p.newSlash){
+					this.p.newSlash = false;
+					this.p.midSlash = true;
+					this.customplay("slash_" + this.p.direction, "slash_start");
+				}
+
+				if(!this.p.midSlash) {
+					if(this.p.vx != 0 | this.p.vy != 0) {
+						this.customplay("move_" + this.p.direction, "move");
+					} else {
+						this.customplay("stand_" + this.p.direction, "stand");
+					}
 				}
 			}
 
@@ -341,32 +352,49 @@ window.addEventListener("load",function() {
 			if(this.p.vy == 0)
 				this.p.y = Math.round(this.p.y);
 		},
-		loseHP: function(normalX, normalY) {
-			Q.state.dec("lives",1);
-			
-			/********GOD MODE***********/
-			if(Q.state.get("lives") == 0)
-				Q.state.inc("lives",1);
+		loseHP: function(normalX, normalY, enemy) {
+			//console.log("x: " + normalX + "  y: " + normalY);
 
-			this.p.ignoreControls = true; 
-			this.p.newSlash = false;
-			this.p.midSlash = false;
-			//this.p.justSlashEnd = false;
-
-			var speedMult = -200;
-			this.p.vx = speedMult * normalX;
-			this.p.vy = speedMult * normalY;
-
-			/*if(normalX == 1)
-				this.customplay("move_right", "move_back");
+			attackSide = "down";	//y=1
+			if(normalY == -1)
+				attackSide = "up";
 			else if(normalX == -1)
-				this.customplay("move_left", "move_back");
-			else if(normalY == 1)
-				this.customplay("move_down", "move_back_flipped");
-			else
-				this.customplay("move_up", "move_back");*/
+				attackSide = "left";
+			if(normalY == 1)
+				attackSide = "right";
 
-			this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
+			if(this.p.shielding && this.p.direction == attackSide) {
+				if(enemy != undefined)
+					enemy.loseHP(0, attackSide);
+			}
+
+			else {
+				Q.state.dec("lives",1);
+				
+				/********GOD MODE***********/
+				if(Q.state.get("lives") == 0)
+					Q.state.inc("lives",1);
+
+				this.p.ignoreControls = true; 
+				this.p.newSlash = false;
+				this.p.midSlash = false;
+				//this.p.justSlashEnd = false;
+
+				var speedMult = -200;
+				this.p.vx = speedMult * normalX;
+				this.p.vy = speedMult * normalY;
+
+				/*if(normalX == 1)
+					this.customplay("move_right", "move_back");
+				else if(normalX == -1)
+					this.customplay("move_left", "move_back");
+				else if(normalY == 1)
+					this.customplay("move_down", "move_back_flipped");
+				else
+					this.customplay("move_up", "move_back");*/
+
+				this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
+			}
 		},
 		inflictSlashDamage: function() {
 			var swordDamage = 10;
@@ -466,7 +494,7 @@ window.addEventListener("load",function() {
 			this.destroy();
 
 			if(collision.obj.isA("Player")) { 
-				collision.obj.loseHP(collision.normalX, collision.normalY);
+				collision.obj.loseHP(collision.normalX, collision.normalY, undefined);
 			}
 		}
 	});
@@ -658,6 +686,7 @@ window.addEventListener("load",function() {
 		/*CHESTS*/
 		stage.insert(new Q.Chest({x: 600, y: 300, chestContent:"bow"}));
 		stage.insert(new Q.Chest({x: 650, y: 300, chestContent:"bomb"}));
+		stage.insert(new Q.Chest({x: 600, y: 350, chestContent:"shield"}));
 
 		/*SPAWN ENEMIES*/
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
@@ -761,10 +790,11 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
+		Q.compileSheets("shield.png", "shield.json");
 		Q.compileSheets("octorok.png", "octorok.json");
 		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
 		Q.compileSheets("skullMovement.png", "skullMovement.json");

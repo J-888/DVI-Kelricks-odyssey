@@ -1,5 +1,5 @@
 {
-	"bomb_up":{"sx":324,"sy":2,"tileW":19,"tileH":22,"frames":7, "spacingX" : 0},
-	"bomb_left":{"sx":176,"sy":2,"tileW":21,"tileH":22,"frames":5, "spacingX" : 0},
-	"bomb_down":{"sx":26,"sy":0,"tileW":20,"tileH":26,"frames":4, "spacingX" : 0}
+	"player_bomb_up":{"sx":324,"sy":2,"tileW":19,"tileH":22,"frames":7, "spacingX" : 0},
+	"player_bomb_left":{"sx":176,"sy":2,"tileW":21,"tileH":22,"frames":5, "spacingX" : 0},
+	"player_bomb_down":{"sx":26,"sy":0,"tileW":20,"tileH":26,"frames":4, "spacingX" : 0}
 }
