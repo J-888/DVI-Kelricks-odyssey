@@ -434,7 +434,7 @@ window.addEventListener("load",function() {
 		var player = stage.insert(new Q.Player({minX: minX, maxX: maxX}));*/
 
 		
-		var player = stage.insert(new Q.Player({minX: 0, maxX: 1000}));
+		var player = stage.insert(new Q.Player({x: 700, y: 700}));
 
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
 		stage.insert(new Q.Skeleton({x: 400, y: 400}));
