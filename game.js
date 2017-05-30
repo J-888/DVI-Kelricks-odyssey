@@ -86,6 +86,10 @@ window.addEventListener("load",function() {
 		show_content_bomb: { frames: [5], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
 		opened: { frames: [3], rate: 1/4.5, loop: false}
 	});
+
+	Q.animations('bombThrown anim', {
+		burn: { frames: [0], rate: 2, loop: false, trigger: "explode"}
+	});
 	
 /********************************/
 /***********COMPONENTS***********/
@@ -276,6 +280,42 @@ window.addEventListener("load",function() {
 			} else if(this.p.vx < 0) {
 				this.play("run_left");
 			}*/ 
+
+			if(this.p.justPressedAction && this.p.items.length != 0){
+				if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bow"){
+					console.log("shoot arrow");
+				}
+				else if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bomb"){
+					console.log("throw bomb");
+					var grav = 100;
+					var throwSpeed = 50;
+					var margin = 5;
+
+					var locationX = this.p.x;
+					var locationY = this.p.y;
+
+					var speedX = 0;
+					var speedY = -throwSpeed;
+
+					if(this.p.direction == "up"){
+						locationY -= (this.p.cy + margin);
+						speedY = - throwSpeed;
+						grav = 0.25*grav;
+					} else if(this.p.direction == "down"){
+						locationY += this.p.cy + margin;
+						speedY = throwSpeed;
+						grav = -0.25*grav;
+					} else if(this.p.direction == "left"){
+						locationX -= (this.p.cy + margin);
+						speedX = - throwSpeed;
+					} else if(this.p.direction == "right"){
+						locationX += this.p.cx + margin;
+						speedX = throwSpeed;
+					}
+
+					Q.stage().insert(new Q.Bomb({x: locationX, y: locationY, vx: speedX, vy: speedY, gravityY: grav}));
+				}
+			}
 
 			if(this.p.newSlash){
 				this.p.newSlash = false;
@@ -494,7 +534,56 @@ window.addEventListener("load",function() {
 			this.p.toPlayer.p.items.push(this.p.chestContent);
 			var currentIndex = Q.state.get("currentItem");
 			var desiredIndex = this.p.toPlayer.p.items.length - 1;
-			Q.state.inc("lives",desiredIndex-currentIndex);
+			if(desiredIndex == 0)	//first item
+				Q.state.inc("currentItem",1);
+			else if (desiredIndex-currentIndex == 0)
+				Q.state.inc("currentItem",this.p.toPlayer.p.items.length);
+			else
+				Q.state.inc("currentItem",desiredIndex-currentIndex);
+		}
+
+	});
+
+		Q.Sprite.extend("Bomb",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "bombThrown",
+				sprite: "bombThrown anim",
+				type: Q.SPRITE_FRIENDLY | Q.SPRITE_ACTIVE |Q.SPRITE_ENEMY
+			});
+
+			this.add('2d, animation');
+			this.play("burn");
+
+			this.on("explode",this,"explode");
+		},
+		explode: function(collision) {
+			this.destroy();
+
+			var bombDamage = 1000;
+			var areaRadius = 15;
+			var areaCenterX = this.p.x;
+			var areaCenterY = this.p.y;
+
+			var minX = areaCenterX - areaRadius;
+			var maxX = areaCenterX + areaRadius;
+			var minY = areaCenterY - areaRadius;
+			var maxY = areaCenterY + areaRadius;
+
+			var allEnemies = Q(".defaultEnemy");
+			allEnemies.each(function(range) {
+				var minX = range[0];
+				var maxX = range[1];
+				var minY = range[2];
+				var maxY = range[3];
+				if(this.p.x+this.p.cx >= minX && this.p.x-this.p.cx <= maxX && this.p.y+this.p.cy >= minY && this.p.y-this.p.cy <= maxY) {
+					var dir = "down";	//TODO
+					this.loseHP(bombDamage, dir);
+				}
+			}, [minX, maxX, minY, maxY], bombDamage); 
 		}
 
 	});
@@ -540,6 +629,10 @@ window.addEventListener("load",function() {
 		/*CHESTS*/
 		stage.insert(new Q.Chest({x: 600, y: 300, chestContent:"bow"}));
 		stage.insert(new Q.Chest({x: 650, y: 300, chestContent:"bomb"}));
+
+
+		stage.insert(new Q.Bomb({x: 650, y: 350}));
+
 
 		/*SPAWN ENEMIES*/
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
@@ -643,7 +736,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -652,6 +745,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("skullMovement.png", "skullMovement.json");
 		Q.compileSheets("overworld.png", "overworld.json");
 		Q.compileSheets("chest.png", "chest.json");
+		Q.compileSheets("bombThrown.png", "bombThrown.json");
 		
 		Q.loadTMX("level1.tmx", function() {
 			/*Q.stageScene("level1");
