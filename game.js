@@ -421,6 +421,31 @@ window.addEventListener("load",function() {
 		}
 	});
 
+	Q.Sprite.extend("Gate",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "gate",
+				sensor: true,
+				collisionMask: Q.SPRITE_FRIENDLY,
+			});
+
+			// Add in pre-made components to get up and running quickly
+			// The `2d` component adds in default 2d collision detection
+			// and kinetics (velocity, gravity)
+			this.on("sensor");
+
+		},
+		sensor: function(collision) {
+			if(collision.isA("Player")) { 
+				Q.clearStages();
+				Q.stageScene('titleScreen');
+			}
+		}
+	});
+
 
 /********************************/
 /************SCENES**************/
@@ -429,21 +454,20 @@ window.addEventListener("load",function() {
 	Q.scene("level1",function(stage) {
 		Q.stageTMX("level1.tmx",stage);
 
-		/*SPAWN PLAYER*/
-		/*var minX = 0, maxX = 60*34;
-		var player = stage.insert(new Q.Player({minX: minX, maxX: maxX}));*/
-
+		stage.insert(new Q.Gate({x: 1216, y: 1232}));
 		
+		/*SPAWN PLAYER*/
 		var player = stage.insert(new Q.Player({x: 520, y: 260}));
 
+		/*SPAWN ENEMIES*/
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
 		stage.insert(new Q.Skeleton({x: 400, y: 400}));
 		stage.insert(new Q.Skull({x: 430, y: 430}));
 
+
 		/*VIEWPORT*/
-		//stage.add("viewport").follow(player,{ x: true, y: true },{ minX: minX, maxX: maxX });
 		var vp = stage.add("viewport");
-		vp.follow(player,{ x: true, y: true },{/* minX: 0, maxX: 1000 */});
+		vp.follow(player,{ x: true, y: true },{});
 		vp.viewport.scale = 1;
 		//stage.viewport.offsetX = -100;
 		//stage.viewport.offsetY = 155;
@@ -515,12 +539,13 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
 		Q.compileSheets("octorok.png", "octorok.json");
 		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
 		Q.compileSheets("skullMovement.png", "skullMovement.json");
+		Q.compileSheets("overworld.png", "overworld.json");
 		
 		Q.loadTMX("level1.tmx", function() {
 			/*Q.stageScene("level1");
