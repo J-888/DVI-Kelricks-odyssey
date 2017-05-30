@@ -204,8 +204,8 @@ window.addEventListener("load",function() {
 				name: "player",
 				sheet: "player_stand_down",	// Setting a sprite sheet sets sprite width and height
 				sprite: "player anim",
-				x: 150,			// You can also set additional properties that can
-				y: 380,				// be overridden on object creation
+				//x: 520,			// You can also set additional properties that can
+				//y: 262,				// be overridden on object creation
 				scale: 1,
 				flip: false,
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT
@@ -434,7 +434,7 @@ window.addEventListener("load",function() {
 		var player = stage.insert(new Q.Player({minX: minX, maxX: maxX}));*/
 
 		
-		var player = stage.insert(new Q.Player({x: 700, y: 700}));
+		var player = stage.insert(new Q.Player({x: 520, y: 260}));
 
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
 		stage.insert(new Q.Skeleton({x: 400, y: 400}));
