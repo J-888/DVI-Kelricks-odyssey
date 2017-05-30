@@ -162,12 +162,30 @@ window.addEventListener("load",function() {
 					newAnim += "_flipped";
 				} */
 
-				if(newSheet.includes("_left")) {
-					newSheet = newSheet.replace("_left", "_right");
-					newAnim += "_flipped";
-				} 
-				else
-					this.p.flip = false;
+				var uniqueCase = false;
+
+				if(this.p.name == "player"){
+
+					if(newSheet.includes("stand_right") || newSheet.includes("move_right")) {
+						newSheet = newSheet.replace("_right", "_left");
+						newAnim += "_flipped";
+						uniqueCase = true;
+					} 
+					else if(newSheet.includes("stand_left") || newSheet.includes("move_left")) {
+						this.p.flip = false;
+						uniqueCase = true;
+					} 
+
+				}
+
+				if(!uniqueCase){
+					if(newSheet.includes("_left")) {
+						newSheet = newSheet.replace("_left", "_right");
+						newAnim += "_flipped";
+					} 
+					else
+						this.p.flip = false;
+				}
 
 				newSheet = this.p.name + "_" + newSheet;
 				if(this.p.sheet != newSheet)
@@ -539,8 +557,9 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
+		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
 		Q.compileSheets("octorok.png", "octorok.json");
 		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
