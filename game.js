@@ -269,6 +269,7 @@ window.addEventListener("load",function() {
 			//console.log("dir:" + this.p.lastdirection);
 			//console.log("vx:" + this.p.vx);
 			//console.log("vy:" + this.p.vy);
+			//console.log(Q.state.get("currentItem"));
 			
 			/*if(this.p.vx > 0) {
 				this.play("run_right");
@@ -490,7 +491,10 @@ window.addEventListener("load",function() {
 			this.play("show_content_" + this.p.chestContent);
 		},
 		giveReward: function(collision) {
-			this.p.toPlayer.p.items.push(this.chestContent);
+			this.p.toPlayer.p.items.push(this.p.chestContent);
+			var currentIndex = Q.state.get("currentItem");
+			var desiredIndex = this.p.toPlayer.p.items.length - 1;
+			Q.state.inc("lives",desiredIndex-currentIndex);
 		}
 
 	});
@@ -535,6 +539,7 @@ window.addEventListener("load",function() {
 
 		/*CHESTS*/
 		stage.insert(new Q.Chest({x: 600, y: 300, chestContent:"bow"}));
+		stage.insert(new Q.Chest({x: 650, y: 300, chestContent:"bomb"}));
 
 		/*SPAWN ENEMIES*/
 		stage.insert(new Q.Octorok({x: 300, y: 300}));
@@ -551,7 +556,7 @@ window.addEventListener("load",function() {
 		stage.centerOn(150,380);
 	});
 
-	Q.UI.Text.extend("Lives",{
+	Q.UI.Text.extend("LivesHUD",{
 		init: function(p) {
 			this._super({ label: "", x: 10-Q.width/2, y: 10-Q.height/2, weight: 100, size: 30, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "left" });
 			Q.state.on("change.lives",this,"lives");
@@ -567,29 +572,33 @@ window.addEventListener("load",function() {
 
 	Q.UI.Text.extend("ItemHUD",{
 		init: function(p) {
-			this._super({ label: "", x: 10-Q.width/2, y: 10-Q.height/2, weight: 100, size: 10, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "left" });
+			this._super({ label: "", x: Q.width/2-10, y: 10-Q.height/2, weight: 100, size: 30, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "right" });
 			Q.state.on("change.currentItem",this,"currentItem");
-			this.lives(Q.state.get("currentItem"));
+			this.currentItem(Q.state.get("currentItem"));
 		},
 		currentItem: function(currentItem) {
 			var player = Q("Player").first();
         	if(player != undefined) {
         		var current = "";
-        		if(player.items.lenght != 0)
-					current= player.items[currentItem%player.items.lenght];
+        		if(player.p.items.length != 0){
+        			var index = Math.abs(currentItem%player.p.items.length);
+					current = player.p.items[index];
+        		}
 
 				this.p.label = current;
 			}
 		}
 	});
 
-	Q.scene("gameStats",function(stage) {
+	Q.scene("HUD",function(stage) {
 		//var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0)" }));
 		//var livesLabel = container.insert(new Q.Lives());
 
 		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0)" }));
 		var label = container.insert(new Q.UI.Text({x:Q.width/2, y: Q.height/2, weight: 0, size: 0, family: "SuperMario", color: "#FFFFFF", outlineWidth: 4, label: "." }));
-		var livesLabel = container.insert(new Q.Lives());
+		var livesLabel = container.insert(new Q.LivesHUD());
+		var itemLabel = container.insert(new Q.ItemHUD());
+
 
 	});
 
@@ -624,7 +633,7 @@ window.addEventListener("load",function() {
 			Q.clearStages();
 			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('level' + Q.state.get("level"));
-			Q.stageScene("gameStats",1);
+			Q.stageScene("HUD",1);
 		});
 
 		container.fit(20);
@@ -646,11 +655,11 @@ window.addEventListener("load",function() {
 		
 		Q.loadTMX("level1.tmx", function() {
 			/*Q.stageScene("level1");
-			Q.stageScene("gameStats", 1);*/
+			Q.stageScene("HUD", 1);*/
 			Q.stageScene('titleScreen');
 		});
 
-		Q.debug = true;
+		//Q.debug = true;
 	});
 
 });
