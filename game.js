@@ -276,6 +276,8 @@ window.addEventListener("load",function() {
 			//console.log("dir:" + this.p.lastdirection);
 			//console.log("vx:" + this.p.vx);
 			//console.log("vy:" + this.p.vy);
+			console.log("x:" + this.p.x);
+			console.log("y:" + this.p.y);
 			//console.log(Q.state.get("currentItem"));
 			
 			/*if(this.p.vx > 0) {
