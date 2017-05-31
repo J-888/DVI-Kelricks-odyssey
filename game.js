@@ -769,7 +769,7 @@ window.addEventListener("load",function() {
 		/*VIEWPORT*/
 		var vp = stage.add("viewport");
 		vp.follow(player,{ x: true, y: true },{});
-		vp.viewport.scale = 1;
+		vp.viewport.scale = 1.5;
 		//stage.viewport.offsetX = -100;
 		//stage.viewport.offsetY = 155;
 		stage.centerOn(150,380);
