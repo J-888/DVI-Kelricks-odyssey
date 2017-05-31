@@ -1,3 +1,8 @@
+var browserDimensions = {
+	width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+	height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+};
+
 window.addEventListener("load",function() {
 
 	// Set up an instance of the Quintus engine and include
@@ -5,10 +10,10 @@ window.addEventListener("load",function() {
 	// includes the `TileLayer` class as well as the `2d` component.
 	var Q = window.Q = Quintus()
 		.include("Sprites, Scenes, Input, 2D, Anim, Touch, UI, TMX")
-		.setup("gameCanvas", { 
+		.setup({ 
 			maximize: false, // Maximize only on touch devices
-			//width: 640, // Set the default width to 320 pixels
-			//height: 960, // Set the default height to 480 pixels
+			width: browserDimensions.width, // Set the default width to 320 pixels
+			height: browserDimensions.height, // Set the default height to 480 pixels
 			
 			//scaleToFit: true, // Scale the game to fit the screen of the player's device
 			scaleToFit2: true, // Scale (using integer factors) the game to fit the screen of the player's device
@@ -885,8 +890,14 @@ window.addEventListener("load",function() {
 		//Q.debug = true;
 	}, {
 		progressCallback: function(loaded,total) {
-			var element = document.getElementById("loading_progress");
-			element.style.width = Math.floor(loaded/total*100) + "%";
+			var element = document.getElementById("loading-bar");
+			var percentage = loaded/total*100
+			element.style.width = Math.floor(percentage) + "%";
+
+			if (percentage == 100){
+				var container = document.getElementById("loading-bar-container");
+				container.parentNode.removeChild(container);
+			}
 		}
 	});
 
