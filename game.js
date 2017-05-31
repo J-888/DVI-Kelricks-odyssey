@@ -5,10 +5,10 @@ window.addEventListener("load",function() {
 	// includes the `TileLayer` class as well as the `2d` component.
 	var Q = window.Q = Quintus()
 		.include("Sprites, Scenes, Input, 2D, Anim, Touch, UI, TMX")
-		.setup({ 
+		.setup("gameCanvas", { 
 			maximize: false, // Maximize only on touch devices
-			width: 640, // Set the default width to 320 pixels
-			height: 960, // Set the default height to 480 pixels
+			//width: 640, // Set the default width to 320 pixels
+			//height: 960, // Set the default height to 480 pixels
 			
 			//scaleToFit: true, // Scale the game to fit the screen of the player's device
 			scaleToFit2: true, // Scale (using integer factors) the game to fit the screen of the player's device
@@ -68,7 +68,12 @@ window.addEventListener("load",function() {
 
 
 	Q.animations('projectile anim', {
-		fly_3: { frames: [0,1,2], rate: 1/4.5}
+		fly_1: { frames: [0], rate: 1/4.5},
+		fly_3: { frames: [0,1,2], rate: 1/4.5},
+		fly_4dir_up: { frames: [0], rate: 1/4.5},
+		fly_4dir_down: { frames: [1], rate: 1/4.5},
+		fly_4dir_right: { frames: [2], rate: 1/4.5},
+		fly_4dir_left: { frames: [3], rate: 1/4.5}
 	});
 
 	Q.animations('octorok anim', {
@@ -276,8 +281,6 @@ window.addEventListener("load",function() {
 			//console.log("dir:" + this.p.lastdirection);
 			//console.log("vx:" + this.p.vx);
 			//console.log("vy:" + this.p.vy);
-			console.log("x:" + this.p.x);
-			console.log("y:" + this.p.y);
 			//console.log(Q.state.get("currentItem"));
 			
 			/*if(this.p.vx > 0) {
@@ -292,7 +295,27 @@ window.addEventListener("load",function() {
 			if(this.p.justPressedAction && this.p.items.length != 0){
 
 				if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bow"){
-					console.log("shoot arrow");
+					var arrowSpeed = 75;
+					var locationX = this.p.x;
+					var locationY = this.p.y;
+					var speedX = 0;
+					var speedY = 0;
+					var margin = 5;
+					if(this.p.direction == "up"){
+						locationY -= (this.p.cy + margin);
+						speedY = - arrowSpeed;
+					} else if(this.p.direction == "down"){
+						locationY += this.p.cy + margin;
+						speedY = arrowSpeed;
+					} else if(this.p.direction == "left"){
+						locationX -= (this.p.cy + margin);
+						speedX = - arrowSpeed;
+					} else if(this.p.direction == "right"){
+						locationX += this.p.cx + margin;
+						speedX = arrowSpeed;
+					}
+					//Q.stage().insert(new Q.Arrow({x: locationX, y: locationY, vx: speedX, vy: speedY, dir: this.p.direction}));
+					Q.stage().insert(new Q.Octorok_rok({x: locationX, y: locationY, vx: speedX, vy: speedY}));
 				}
 				else if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bomb"){
 					var grav = 100;
@@ -357,7 +380,7 @@ window.addEventListener("load",function() {
 		loseHP: function(normalX, normalY, enemy) {
 			//console.log("x: " + normalX + "  y: " + normalY);
 
-			attackSide = "down";	//y=1
+			var attackSide = "down";	//y=1
 			if(normalY == -1)
 				attackSide = "up";
 			else if(normalX == -1)
@@ -647,6 +670,39 @@ window.addEventListener("load",function() {
 
 	});
 
+	Q.Sprite.extend("Arrow",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "arrow",
+				sprite: "projectile anim",
+				dir: ""
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, projectile');
+			this.on("hit",this,"collision");
+			this.play("fly_4dir_" + this.p.dir);
+		},
+		collision: function(collision) {
+			this.destroy();
+
+			if(collision.obj.defaultEnemy != undefined) { 
+					var attackSide = "down";	//y=1
+				if(normalY == -1)
+					attackSide = "up";
+				else if(normalX == -1)
+					attackSide = "left";
+				if(normalY == 1)
+					attackSide = "right";
+
+				collision.obj.loseHP(20, attackSide);
+			}
+		}
+	});
+
 	Q.Sprite.extend("Gate",{
 
 		// the init constructor is called on creation
@@ -684,6 +740,8 @@ window.addEventListener("load",function() {
 		
 		/*SPAWN PLAYER*/
 		var player = stage.insert(new Q.Player({x: 520, y: 260}));
+
+		Q.stage().insert(new Q.Arrow({x: 500, y: 500, vx: 0, vy: 0, dir: "left"}));
 
 		/*CHESTS*/
 		stage.insert(new Q.Chest({x: 600, y: 300, chestContent:"bow"}));
@@ -792,7 +850,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -804,6 +862,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("chest.png", "chest.json");
 		Q.compileSheets("bombThrown.png", "bombThrown.json");
 		Q.compileSheets("explosion.png", "explosion.json");
+		Q.compileSheets("arrow.png", "arrow.json");
 		
 		Q.loadTMX("level1.tmx", function() {
 			/*Q.stageScene("level1");
@@ -812,6 +871,11 @@ window.addEventListener("load",function() {
 		});
 
 		//Q.debug = true;
+	}, {
+		progressCallback: function(loaded,total) {
+			var element = document.getElementById("loading_progress");
+			element.style.width = Math.floor(loaded/total*100) + "%";
+		}
 	});
 
 });

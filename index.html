@@ -23,14 +23,79 @@
 			font-family: "PressStart2P";
 			src: url(./fonts/PressStart2P.ttf) format("truetype");
 		}
-			canvas {
+		@font-face {
+			font-family: "Charlemagne";
+			src: url(./fonts/Charlemagne.ttf) format("truetype");
+		}
+		@font-face {
+			font-family: "CharlemagneBold";
+			src: url(./fonts/CharlemagneBold.otf) format("truetype");
+		}
+		@font-face {
+			font-family: "CharlemagneRegular";
+			src: url(./fonts/CharlemagneRegular.ttf) format("truetype");
+		}
+		@font-face {
+			font-family: "Hylia";
+			src: url(./fonts/HyliaSerifBeta-Regular.otf) format("truetype");
+		}
+		@font-face {
+			font-family: "Ganon";
+			src: url(./fonts/ReturnofGanon.ttf) format("truetype");
+		}
+		@font-face {
+			font-family: "Triforce";
+			src: url(./fonts/Triforce.ttf) format("truetype");
+		}
+		@font-face {
+			font-family: "ZeldaDX";
+			src: url(./fonts/ZeldaDXTTBRK.ttf) format("truetype");
+		}
+		canvas {
 			background-color:black;
 			/*image-rendering: pixelated;
 			image-rendering: crisp-edges;*/
+		}
+
+		/*LOADING BAR*/
+		#loading {
+			margin:50px auto;
+			max-width:1024px;
+			position:fixed;
+			width:100%;
+			height:100%;
+			text-align:center;
+		}
+
+		#loading_container {
+			position:relative;
+			margin:0 auto;
+			width:50%;
+			height:20px;
+			border:1px solid black;
+			text-align:center;
+			padding-top:10px;
+		}
+
+		#loading_progress {
+			width:0%;
+			background-color:red;
+			position:absolute;
+			height:30px;
+			top:0px;
+			left:0px;
+			opacity:0.4;
 		}
 	</style>
 	<script src='game.js'></script>
 </head>
 <body>
+	<canvas id='gameCanvas' width='640' height='960'></canvas>
+	<div id='loading'>
+		<div id='loading_container'>
+			Loading...
+			<div id='loading_progress'></div>
+		</div>
+	</div>
 </body>
 </html>
