@@ -356,6 +356,9 @@ window.addEventListener("load",function() {
 			if(this.p.holdingAction && this.p.items.length != 0){
 				if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "shield"){
 					this.p.shielding = true;
+					var shieldSpeedReduction = 0.5;
+					this.p.vx *= shieldSpeedReduction;
+					this.p.vy *= shieldSpeedReduction;
 					this.customplay("shield_" + this.p.direction, "shield");
 				}
 			}
@@ -390,7 +393,7 @@ window.addEventListener("load",function() {
 				attackSide = "up";
 			else if(normalX == -1)
 				attackSide = "left";
-			if(normalY == 1)
+			else if(normalX == 1)
 				attackSide = "right";
 
 			if(this.p.shielding && this.p.direction == attackSide) {
