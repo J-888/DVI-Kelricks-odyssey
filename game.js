@@ -744,14 +744,26 @@ window.addEventListener("load",function() {
 		Q.stage().insert(new Q.Arrow({x: 500, y: 500, vx: 0, vy: 0, dir: "left"}));
 
 		/*CHESTS*/
-		stage.insert(new Q.Chest({x: 600, y: 300, chestContent:"bow"}));
-		stage.insert(new Q.Chest({x: 650, y: 300, chestContent:"bomb"}));
-		stage.insert(new Q.Chest({x: 600, y: 350, chestContent:"shield"}));
+		stage.insert(new Q.Chest({x: 584, y: 204, chestContent:"shield"}));
+		stage.insert(new Q.Chest({x: 513, y: 998, chestContent:"bow"}));
+		stage.insert(new Q.Chest({x: 1345, y: 572, chestContent:"bomb"}));
 
 		/*SPAWN ENEMIES*/
-		stage.insert(new Q.Octorok({x: 300, y: 300}));
+
+		stage.insert(new Q.Skull({x: 690, y: 485}));
+		stage.insert(new Q.Skull({x: 615, y: 615}));
+		stage.insert(new Q.Skull({x: 679, y: 905}));
+		stage.insert(new Q.Octorok({x: 867, y: 1081}));
+		stage.insert(new Q.Octorok({x: 1184, y: 715}));
+		stage.insert(new Q.Skeleton({x: 1411, y: 685}));
+		stage.insert(new Q.Skeleton({x: 1284, y: 838}));
+		stage.insert(new Q.Skeleton({x: 1121, y: 1279}));
+		stage.insert(new Q.Skeleton({x: 1372, y: 1536}));
+
+
+		/*stage.insert(new Q.Octorok({x: 300, y: 300}));
 		stage.insert(new Q.Skeleton({x: 400, y: 400}));
-		stage.insert(new Q.Skull({x: 430, y: 430}));
+		stage.insert(new Q.Skull({x: 430, y: 430}));*/
 
 
 		/*VIEWPORT*/
