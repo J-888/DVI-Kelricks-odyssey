@@ -319,8 +319,8 @@ window.addEventListener("load",function() {
 						locationX += this.p.cx + margin;
 						speedX = arrowSpeed;
 					}
-					//Q.stage().insert(new Q.Arrow({x: locationX, y: locationY, vx: speedX, vy: speedY, dir: this.p.direction}));
-					Q.stage().insert(new Q.Octorok_rok({x: locationX, y: locationY, vx: speedX, vy: speedY}));
+					Q.stage().insert(new Q.Arrow({x: locationX, y: locationY, vx: speedX, vy: speedY, dir: this.p.direction}));
+					//Q.stage().insert(new Q.Octorok_rok({x: locationX, y: locationY, vx: speedX, vy: speedY}));
 				}
 				else if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bomb"){
 					var grav = 100;
@@ -490,7 +490,7 @@ window.addEventListener("load",function() {
 			var locationY = this.p.y;
 			var speedX = 0;
 			var speedY = 0;
-			var margin = 5;
+			var margin = 8 + 16;
 			if(this.p.facing == "up"){
 				locationY -= (this.p.cy + margin);
 				speedY = - this.p.proyectileSpeed;
@@ -695,20 +695,30 @@ window.addEventListener("load",function() {
 			this.play("fly_4dir_" + this.p.dir);
 		},
 		collision: function(collision) {
-			this.destroy();
-
-			if(collision.obj.defaultEnemy != undefined) { 
-					var attackSide = "down";	//y=1
-				if(normalY == -1)
-					attackSide = "up";
-				else if(normalX == -1)
-					attackSide = "left";
-				if(normalY == 1)
-					attackSide = "right";
-
-				collision.obj.loseHP(20, attackSide);
+			if (collision.obj.isA("Arrow")){
+				collision.obj.destroy();
 			}
+			else if(!collision.obj.isA("Player") && !collision.obj.isA("Arrow")) { 
+				this.destroy();
+
+				if(collision.obj.defaultEnemy != undefined) { 
+						var attackSide = "down";	//y=1
+					if(collision.normalY == +1)
+						attackSide = "up";
+					if(collision.normalX == +1)
+						attackSide = "left";
+					else if(collision.normalX == -1)
+						attackSide = "right";
+
+					collision.obj.loseHP(20, this.p.dir);
+				}
+			}
+		},
+		step: function(dt){
+			if (this.p.vx == 0 && this.p.vy == 0)
+				this.destroy();
 		}
+
 	});
 
 	Q.Sprite.extend("Gate",{
