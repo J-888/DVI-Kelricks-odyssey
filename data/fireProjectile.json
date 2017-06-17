@@ -1,0 +1,5 @@
+{
+	"fireProjectile_up":{"sx":26,"sy":0,"tileW":13,"tileH":13,"frames":1, "spacingX" : 0},
+	"fireProjectile_right":{"sx":13,"sy":0,"tileW":13,"tileH":13,"frames":1, "spacingX" : 0},
+	"fireProjectile_down":{"sx":0,"sy":0,"tileW":13,"tileH":13,"frames":1, "spacingX" : 0}
+}
