@@ -1,0 +1,5 @@
+{
+	"baston_up":{"sx":885,"sy":0,"tileW":23,"tileH":40,"frames":11, "spacingX" : 0},
+	"baston_right":{"sx":403,"sy":0,"tileW":38,"tileH":40,"frames":11, "spacingX" : 0},
+	"baston_down":{"sx":75,"sy":0,"tileW":24,"tileH":40,"frames":11, "spacingX" : 0}
+}
