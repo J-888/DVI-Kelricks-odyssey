@@ -1,0 +1,6 @@
+{
+	"monstersGuadanya_left":{"sx":288,"sy":192,"tileW":32,"tileH":32,"frames":3, "spacingX" : 0},
+	"monstersGuadanya_up":{"sx":192,"sy":192,"tileW":32,"tileH":32,"frames":3, "spacingX" : 0},
+	"monstersGuadanya_right":{"sx":96,"sy":192,"tileW":32,"tileH":32,"frames":3, "spacingX" : 0},
+	"monstersGuadanya_down":{"sx":0,"sy":192,"tileW":32,"tileH":32,"frames":3, "spacingX" : 0}
+}
