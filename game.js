@@ -870,20 +870,46 @@ window.addEventListener("load",function() {
 
 		var imgw = Q.assets[bgImg].width;
 		var imgh = Q.assets[bgImg].height;
-		var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+		//var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+		var imgScale = Q.height/imgh;
 
 		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
-		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale, keyActionName:['confirm', 'fire', 'action'] }))
+		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale/*, keyActionName:['confirm', 'fire', 'action']*/ }));
 		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/4, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "Kelrick's Odyssey" }));
 
-		var start = container.insert(new Q.UI.Text({x: 0, y: Q.height/4, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Press Start" }));
+		var start = container.insert(new Q.UI.Text({x: 0, y: Q.height*7/32, weight: 100, size: 50, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Press Start" }));
+		var controls = container.insert(new Q.UI.Text({x: 0, y: Q.height*10/32, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Controls" }));
+		var credits = container.insert(new Q.UI.Text({x: 0, y: Q.height*13/32, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Credits" }));
 
-		button.on("click",function() {
+		var startButton = container.insert(new Q.UI.Button({ x: start.p.x, y: start.p.y, w: start.p.w, h: start.p.h, keyActionName:['confirm', 'fire'/*, 'action'*/] }));
+		var controlsButton = container.insert(new Q.UI.Button({ x: controls.p.x, y: controls.p.y, w: controls.p.w, h: controls.p.h}));
+		var creditsButton = container.insert(new Q.UI.Button({ x: credits.p.x, y: credits.p.y, w: credits.p.w, h: credits.p.h, keyActionName:['action'] }));
+
+		startButton.on("click",function() {
 			Q.clearStages();
 			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("HUD",1);
 		});
+
+		controlsButton.on("click",function() {
+			/*Q.clearStages();
+			Q.stageScene('controlsScreen');*/
+		});
+
+		creditsButton.on("click",function() {
+			Q.clearStages();
+			Q.stageScene('creditsScreen');
+		});
+
+
+
+		/*button.on("click",function() {
+			Q.clearStages();
+			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+			Q.stageScene('level' + Q.state.get("level"));
+			Q.stageScene("HUD",1);
+		});*/
 
 		container.fit(20);
 	});
@@ -893,7 +919,8 @@ window.addEventListener("load",function() {
 
 		var imgw = Q.assets[bgImg].width;
 		var imgh = Q.assets[bgImg].height;
-		var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+		//var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+		var imgScale = Q.height/imgh;
 
 		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
 		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale, keyActionName:['confirm', 'fire', 'action'] }))
@@ -935,7 +962,7 @@ window.addEventListener("load",function() {
 			//Q.stageScene('creditsScreen');
 		});
 
-		//Q.debug = true;
+		Q.debug = true;
 	}, {
 		progressCallback: function(loaded,total) {
 			var element = document.getElementById("loading-bar");
