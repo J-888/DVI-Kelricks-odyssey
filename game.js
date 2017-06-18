@@ -795,7 +795,7 @@ window.addEventListener("load",function() {
 
 	Q.UI.Text.extend("LivesHUD",{
 		init: function(p) {
-			this._super({ label: "", x: 10-Q.width/2, y: 10-Q.height/2, weight: 100, size: 30, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "left" });
+			this._super({ label: "", x: 10-Q.width/2, y: 10-Q.height/2, weight: 100, size: 30, family: "PressStart2P", color: "#CA010C", outlineWidth: 6, align: "left" });
 			Q.state.on("change.lives",this,"lives");
 			this.lives(Q.state.get("lives"));
 		},
@@ -809,7 +809,7 @@ window.addEventListener("load",function() {
 
 	Q.UI.Text.extend("ItemHUD",{
 		init: function(p) {
-			this._super({ label: "", x: Q.width/2-10, y: 10-Q.height/2, weight: 100, size: 30, family: "PressStart2P", color: "#FF0000", outlineWidth: 6, align: "right" });
+			this._super({ label: "", x: Q.width/2-10, y: 10-Q.height/2, weight: 800, size: 40, family: "Zeldicons", color: "#FFFFFF",  outlineColor: "#000000", outlineWidth: 4, align: "right"});
 			Q.state.on("change.currentItem",this,"currentItem");
 			this.currentItem(Q.state.get("currentItem"));
 		},
@@ -821,6 +821,14 @@ window.addEventListener("load",function() {
         			var index = Math.abs(currentItem%player.p.items.length);
 					current = player.p.items[index];
         		}
+
+        		//check zeldaicon chars at http://bluejamesbond.github.io/CharacterMap/
+        		if(current == "shield")
+        			current = "\ue611";	//shield char
+        		else if (current == "bow")
+        			current = "\ue604"	//bow char
+        		else if (current == "bomb")
+        			current = "\ue601"	//bomb char
 
 				this.p.label = current;
 			}
@@ -867,7 +875,7 @@ window.addEventListener("load",function() {
 		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/4, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "Kelrick's Odyssey" }));
 
 		var start = container.insert(new Q.UI.Text({x: 0, y: Q.height/4, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Press Start" }));
-		
+
 		button.on("click",function() {
 			Q.clearStages();
 			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
