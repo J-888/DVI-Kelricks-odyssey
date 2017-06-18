@@ -300,7 +300,7 @@ window.addEventListener("load",function() {
 			if(this.p.justPressedAction && this.p.items.length != 0){
 
 				if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bow"){
-					var arrowSpeed = 75;
+					var arrowSpeed = 250;
 					var locationX = this.p.x;
 					var locationY = this.p.y;
 					var speedX = 0;
@@ -864,7 +864,9 @@ window.addEventListener("load",function() {
 
 		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
 		var button = container.insert(new Q.UI.Button({ asset: "mainTitle.jpg", x: 0, y: 0, scale: imgScale, keyActionName:['confirm', 'fire', 'action'] }))
-		var label = container.insert(new Q.UI.Text({x:0, y: 70, weight: 100, size: 24, family: "SuperMario", color: "#FFFFFF", outlineWidth: 4, label: "Start" }));
+		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/4, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "Kelrick's Odyssey" }));
+
+		var start = container.insert(new Q.UI.Text({x: 0, y: Q.height/4, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Press Start" }));
 		
 		button.on("click",function() {
 			Q.clearStages();
@@ -895,8 +897,6 @@ window.addEventListener("load",function() {
 		Q.compileSheets("arrow.png", "arrow.json");
 		
 		Q.loadTMX("level1.tmx", function() {
-			/*Q.stageScene("level1");
-			Q.stageScene("HUD", 1);*/
 			Q.stageScene('titleScreen');
 		});
 
