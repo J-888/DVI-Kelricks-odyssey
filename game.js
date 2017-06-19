@@ -877,13 +877,14 @@ window.addEventListener("load",function() {
 		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale/*, keyActionName:['confirm', 'fire', 'action']*/ }));
 		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/4, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "Kelrick's Odyssey" }));
 
-		var start = container.insert(new Q.UI.Text({x: 0, y: Q.height*7/32, weight: 100, size: 50, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Press Start" }));
-		var controls = container.insert(new Q.UI.Text({x: 0, y: Q.height*10/32, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Controls" }));
-		var credits = container.insert(new Q.UI.Text({x: 0, y: Q.height*13/32, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Credits" }));
+		var startButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*7/32, keyActionName:['confirm', 'fire'/*, 'action'*/] }));
+		var start = startButton.insert(new Q.UI.Text({weight: 100, size: 50, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Press Start" }));
 
-		var startButton = container.insert(new Q.UI.Button({ x: start.p.x, y: start.p.y, w: start.p.w, h: start.p.h, keyActionName:['confirm', 'fire'/*, 'action'*/] }));
-		var controlsButton = container.insert(new Q.UI.Button({ x: controls.p.x, y: controls.p.y, w: controls.p.w, h: controls.p.h}));
-		var creditsButton = container.insert(new Q.UI.Button({ x: credits.p.x, y: credits.p.y, w: credits.p.w, h: credits.p.h, keyActionName:['action'] }));
+		var controlsButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*10/32}));
+		var controls = controlsButton.insert(new Q.UI.Text({weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Controls" }));
+
+		var creditsButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*13/32, keyActionName:['action'] }));
+		var credits = creditsButton.insert(new Q.UI.Text({weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Credits" }));
 
 		startButton.on("click",function() {
 			Q.clearStages();
