@@ -1,0 +1,9 @@
+{
+	"player_stand_down":{	"sx":15,	"sy":9,		"tileW":18,		"tileH":23,		"frames":1},
+	"player_stand_left":{	"sx":51,	"sy":9,		"tileW":17,		"tileH":23,		"frames":1},
+	"player_stand_up":{	"sx":79,	"sy":9,		"tileW":17,		"tileH":23,		"frames":1},
+
+	"player_move_down":{	"sx":15,	"sy":76,	"tileW":18,		"tileH":24,		"frames":10, "spacingX" : 14},
+	"player_move_left":{	"sx":350,	"sy":76,	"tileW":25,		"tileH":24,		"frames":10, "spacingX" : 7},
+	"player_move_up":{		"sx":683,	"sy":76,	"tileW":18,		"tileH":24,		"frames":10, "spacingX" : 14}
+}

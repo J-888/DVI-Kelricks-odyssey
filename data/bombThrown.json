@@ -1,0 +1,3 @@
+{
+	"bombThrown":{ "sx":0, "sy":0, "tileW":12, "tileH":14, "frames":2, "spacingX" : 2}
+}

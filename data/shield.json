@@ -1,0 +1,5 @@
+{
+	"player_shield_up":{"sx":46,"sy":0,"tileW":23,"tileH":22,"frames":1, "spacingX" : 0},
+	"player_shield_right":{"sx":23,"sy":0,"tileW":23,"tileH":22,"frames":1, "spacingX" : 0},
+	"player_shield_down":{"sx":0,"sy":0,"tileW":23,"tileH":25,"frames":1, "spacingX" : 0}
+}

@@ -1,0 +1,10 @@
+{
+	"octorok_red":{"sx":10,"sy":10,"tileW":16,"tileH":15,"frames":8, "spacingX" : 2},
+	"octorok_blue":{"sx":10,"sy":93,"tileW":16,"tileH":15,"frames":8, "spacingX" : 2},
+	"octorok_yellow":{"sx":168,"sy":10,"tileW":16,"tileH":15,"frames":8, "spacingX" : 2},
+	"octorok_red_shoot_d":{"sx":10,"sy":63,"tileW":16,"tileH":16,"frames":2, "spacingX" : 2},
+	"octorok_red_shoot_u":{"sx":46,"sy":63,"tileW":16,"tileH":16,"frames":2, "spacingX" : 2},
+	"octorok_red_shoot_l":{"sx":82,"sy":63,"tileW":20,"tileH":16,"frames":2, "spacingX" : 2},
+	"octorok_red_shoot_r":{"sx":125,"sy":63,"tileW":20,"tileH":16,"frames":2, "spacingX" : 2},
+	"octorok_rok":{"sx":322,"sy":7,"tileW":8,"tileH":8,"frames":3, "spacingX" : 2}
+}

@@ -1,0 +1,5 @@
+{
+	"player_boomerang_up":{"sx":348,"sy":0,"tileW":29,"tileH":31,"frames":6, "spacingX" : 0},
+	"player_boomerang_right":{"sx":174,"sy":0,"tileW":29,"tileH":31,"frames":6, "spacingX" : 0},
+	"player_boomerang_down":{"sx":0,"sy":0,"tileW":29,"tileH":31,"frames":6, "spacingX" : 0}
+}

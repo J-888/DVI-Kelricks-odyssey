@@ -1,0 +1,6 @@
+{
+	"monstersDjinn_left":{"sx":288,"sy":128,"tileW":32,"tileH":32,"frames":3, "spacingX" : 0},
+	"monstersDjinn_up":{"sx":192,"sy":128,"tileW":32,"tileH":32,"frames":3, "spacingX" : 0},
+	"monstersDjinn_right":{"sx":96,"sy":128,"tileW":32,"tileH":32,"frames":3, "spacingX" : 0},
+	"monstersDjinn_down":{"sx":0,"sy":128,"tileW":32,"tileH":32,"frames":3, "spacingX" : 0}
+}
