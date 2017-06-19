@@ -893,12 +893,31 @@ window.addEventListener("load",function() {
 			Q.stageScene("HUD",1);
 		});
 
+		startButton.on("push",function() {
+			Q.clearStages();
+			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+			Q.stageScene('level' + Q.state.get("level"));
+			Q.stageScene("HUD",1);
+		});
+
 		controlsButton.on("click",function() {
 			/*Q.clearStages();
 			Q.stageScene('controlsScreen');*/
+			var a = 1;
+		});
+
+		controlsButton.on("push",function() {
+			/*Q.clearStages();
+			Q.stageScene('controlsScreen');*/
+			var a = 1;
 		});
 
 		creditsButton.on("click",function() {
+			Q.clearStages();
+			Q.stageScene('creditsScreen');
+		});
+
+		creditsButton.on("push",function() {
 			Q.clearStages();
 			Q.stageScene('creditsScreen');
 		});
