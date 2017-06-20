@@ -288,8 +288,10 @@ window.addEventListener("load",function() {
 			//console.log("dir:" + this.p.lastdirection);
 			//console.log("vx:" + this.p.vx);
 			//console.log("vy:" + this.p.vy);
+			console.log("vx:" + this.p.x);
+			console.log("vy:" + this.p.y);
 			//console.log(Q.state.get("currentItem"));
-			console.log(this.p.itemsCooldown);
+			//console.log(this.p.itemsCooldown);
 			
 			/*if(this.p.vx > 0) {
 				this.play("run_right");
@@ -812,6 +814,27 @@ window.addEventListener("load",function() {
 		stage.centerOn(150,380);
 	});
 
+	Q.scene("level3",function(stage) {
+		Q.stageTMX("level3.tmx",stage);
+
+		//stage.insert(new Q.Gate({x: 1216, y: 1232}));
+		
+		/*SPAWN PLAYER*/
+		var player = stage.insert(new Q.Player({x: 216, y: 367}));
+
+		Q.stage().insert(new Q.Arrow({x: 500, y: 500, vx: 0, vy: 0, dir: "left"}));
+
+		/*SPAWN BOSS*/
+
+		/*VIEWPORT*/
+		var vp = stage.add("viewport");
+		vp.follow(player,{ x: true, y: true },{});
+		vp.viewport.scale = 1.5;
+		//stage.viewport.offsetX = -100;
+		//stage.viewport.offsetY = 155;
+		stage.centerOn(150,380);
+	});
+
 	Q.UI.Text.extend("LivesHUD",{
 		init: function(p) {
 			this._super({ label: "", x: 10-Q.width/2, y: 10-Q.height/2, weight: 100, size: 30, family: "PressStart2P", color: "#CA010C", outlineWidth: 6, align: "left" });
@@ -907,14 +930,16 @@ window.addEventListener("load",function() {
 
 		startButton.on("click",function() {
 			Q.clearStages();
-			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+			Q.state.reset({ level: 3, lives: 5, currentItem: 0 });
+			//Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("HUD",1);
 		});
 
 		startButton.on("push",function() {
 			Q.clearStages();
-			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+			Q.state.reset({ level: 3, lives: 5, currentItem: 0 });
+			//Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("HUD",1);
 		});
@@ -989,7 +1014,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("explosion.png", "explosion.json");
 		Q.compileSheets("arrow.png", "arrow.json");
 		
-		Q.loadTMX("level1.tmx", function() {
+		Q.loadTMX("level1.tmx, level3.tmx", function() {
 			Q.stageScene('titleScreen');
 			//Q.stageScene('creditsScreen');
 		});
