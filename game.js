@@ -288,8 +288,8 @@ window.addEventListener("load",function() {
 			//console.log("dir:" + this.p.lastdirection);
 			//console.log("vx:" + this.p.vx);
 			//console.log("vy:" + this.p.vy);
-			console.log("vx:" + this.p.x);
-			console.log("vy:" + this.p.y);
+			//console.log("x:" + this.p.x);
+			//console.log("y:" + this.p.y);
 			//console.log(Q.state.get("currentItem"));
 			//console.log(this.p.itemsCooldown);
 			
@@ -780,8 +780,6 @@ window.addEventListener("load",function() {
 		/*SPAWN PLAYER*/
 		var player = stage.insert(new Q.Player({x: 520, y: 260}));
 
-		Q.stage().insert(new Q.Arrow({x: 500, y: 500, vx: 0, vy: 0, dir: "left"}));
-
 		/*CHESTS*/
 		stage.insert(new Q.Chest({x: 584, y: 204, chestContent:"shield"}));
 		stage.insert(new Q.Chest({x: 513, y: 998, chestContent:"bow"}));
@@ -814,6 +812,66 @@ window.addEventListener("load",function() {
 		stage.centerOn(150,380);
 	});
 
+		Q.scene("level2",function(stage) {
+		//Q.stageTMX("level2.tmx",stage);
+		Q.stageTMX("level3.tmx",stage);
+
+		var w = 100, h = 100;	//var w = 80, h = 40;
+		/* create a connected map where the player can reach all non-wall sections */
+		var map = new ROT.Map.Cellular(w, h, { connected: true });
+
+		/* cells with 1/2 probability */
+		map.randomize(0.5);
+
+		/* make a few generations */
+		for (var i=0; i<4; i++) map.create();
+
+		/* display only the final map */
+		map.create();
+
+		/* now connect the maze */
+		var callback = function(){};
+
+		map.connect(callback, 1);
+
+		for(var i = 0; i < map.length; i++) {
+			for(var j = 0; j < map[i].length; j++) {
+
+			}
+		}
+
+		//stage.insert(new Q.Gate({x: 1216, y: 1232}));
+		
+		/*SPAWN PLAYER*/
+		var player = stage.insert(new Q.Player({x: 520, y: 260}));
+
+		/*SPAWN ENEMIES*/
+
+		/*stage.insert(new Q.Skull({x: 690, y: 485}));
+		stage.insert(new Q.Skull({x: 615, y: 615}));
+		stage.insert(new Q.Skull({x: 679, y: 905}));
+		stage.insert(new Q.Octorok({x: 867, y: 1081}));
+		stage.insert(new Q.Octorok({x: 1184, y: 715}));
+		stage.insert(new Q.Skeleton({x: 1411, y: 685}));
+		stage.insert(new Q.Skeleton({x: 1284, y: 838}));
+		stage.insert(new Q.Skeleton({x: 1121, y: 1279}));
+		stage.insert(new Q.Skeleton({x: 1372, y: 1536}));*/
+
+
+		/*stage.insert(new Q.Octorok({x: 300, y: 300}));
+		stage.insert(new Q.Skeleton({x: 400, y: 400}));
+		stage.insert(new Q.Skull({x: 430, y: 430}));*/
+
+
+		/*VIEWPORT*/
+		var vp = stage.add("viewport");
+		vp.follow(player,{ x: true, y: true },{});
+		vp.viewport.scale = 1.5;
+		//stage.viewport.offsetX = -100;
+		//stage.viewport.offsetY = 155;
+		stage.centerOn(150,380);
+	});
+
 	Q.scene("level3",function(stage) {
 		Q.stageTMX("level3.tmx",stage);
 
@@ -821,8 +879,6 @@ window.addEventListener("load",function() {
 		
 		/*SPAWN PLAYER*/
 		var player = stage.insert(new Q.Player({x: 216, y: 367}));
-
-		Q.stage().insert(new Q.Arrow({x: 500, y: 500, vx: 0, vy: 0, dir: "left"}));
 
 		/*SPAWN BOSS*/
 
@@ -930,7 +986,7 @@ window.addEventListener("load",function() {
 
 		startButton.on("click",function() {
 			Q.clearStages();
-			Q.state.reset({ level: 3, lives: 5, currentItem: 0 });
+			Q.state.reset({ level: 2, lives: 5, currentItem: 0 });
 			//Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("HUD",1);
@@ -938,7 +994,7 @@ window.addEventListener("load",function() {
 
 		startButton.on("push",function() {
 			Q.clearStages();
-			Q.state.reset({ level: 3, lives: 5, currentItem: 0 });
+			Q.state.reset({ level: 2, lives: 5, currentItem: 0 });
 			//Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('level' + Q.state.get("level"));
 			Q.stageScene("HUD",1);
@@ -1014,9 +1070,8 @@ window.addEventListener("load",function() {
 		Q.compileSheets("explosion.png", "explosion.json");
 		Q.compileSheets("arrow.png", "arrow.json");
 		
-		Q.loadTMX("level1.tmx, level3.tmx", function() {
+		Q.loadTMX("level1.tmx, level2.tmx, level3.tmx", function() {
 			Q.stageScene('titleScreen');
-			//Q.stageScene('creditsScreen');
 		});
 
 		Q.debug = true;
