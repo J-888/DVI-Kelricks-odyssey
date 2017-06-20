@@ -93,7 +93,29 @@ window.addEventListener("load",function() {
 		wall_down_left: { frames: [10], rate: 1, loop: true},
 		wall_down_right: { frames: [14], rate: 1, loop: true},
 		wall_left: { frames: [5], rate: 1, loop: true},
-		wall_right: { frames: [9], rate: 1, loop: true}
+		wall_right: { frames: [9], rate: 1, loop: true},
+		wall_hole_up_left: { frames: [15], rate: 1, loop: true},
+		wall_hole_up_right: { frames: [16], rate: 1, loop: true},
+		wall_hole_down_left: { frames: [17], rate: 1, loop: true},
+		wall_hole_down_right: { frames: [18], rate: 1, loop: true}
+	});
+
+		Q.animations('cave floor anim', {
+		floor1: { frames: [0], rate: 1, loop: true},
+		floor2: { frames: [1], rate: 1, loop: true},
+		floor3: { frames: [2], rate: 1, loop: true},
+		floor4: { frames: [3], rate: 1, loop: true},
+		floor5: { frames: [4], rate: 1, loop: true},
+		floor6: { frames: [5], rate: 1, loop: true},
+		floor7: { frames: [6], rate: 1, loop: true},
+		floor8: { frames: [7], rate: 1, loop: true},
+		floor9: { frames: [8], rate: 1, loop: true},
+		floor10: { frames: [9], rate: 1, loop: true},
+		floor11: { frames: [10], rate: 1, loop: true},
+		floor12: { frames: [11], rate: 1, loop: true},
+		floor13: { frames: [12], rate: 1, loop: true},
+		floor14: { frames: [13], rate: 1, loop: true},
+		floor15: { frames: [14], rate: 1, loop: true},
 	});
 
 	Q.animations('octorok anim', {
@@ -788,14 +810,35 @@ window.addEventListener("load",function() {
 		init: function(p) {
 			// You can call the parent's constructor with this._super(..)
 			this._super(p, {
-				sheet: "walls"
+				sheet: "walls",
+				sprite: "cave walls anim",
+				dir: ""
 			});
 
 			//this.add('2d, animation');
-			//this.add('animation');
-			//this.play("wall_up1");
+			this.add('animation');
+			this.play("wall_" + this.p.dir);
 
 			//this.on("hit",this,"collision");
+		}
+	});
+
+	Q.Sprite.extend("CaveFloor",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "floor",
+				sprite: "cave floor anim",
+				sensor: true,
+				collisionMask: Q.SPRITE_NONE,
+				type: Q.SPRITE_NONE
+			});
+
+			//this.add('2d, animation');
+			this.add('animation');
+			this.play("floor" + Math.floor((Math.random() * 15) + 1));
 		}
 	});
 
@@ -846,8 +889,10 @@ window.addEventListener("load",function() {
 
 	Q.scene("level2",function(stage) {
 		Q.stageTMX("level2.tmx",stage);
+		//Q.stageTMX("level3.tmx",stage);
 
-		var w = 40, h = 40;	//var w = 80, h = 40;
+		var w = 40, h = 40;
+		var wallScale = 2;
 		/* create a connected map where the player can reach all non-wall sections */
 		var map = new ROT.Map.Cellular(w, h, { connected: true });
 
@@ -867,8 +912,44 @@ window.addEventListener("load",function() {
 
 		for(var i = 0; i < map._map.length; i++) {
 			for(var j = 0; j < map._map[i].length; j++) {
+				var maxI = map._map.length-1;
 				if(map._map[i][j] == 0){	//its a wall
-					stage.insert(new Q.CaveWall({x: 16*i, y: 16*j}));
+					var maxJ = map._map[i].length-1;
+					var wallDir;
+					var isWall = true;
+
+					if(i!=0 && j!=0 && map._map[i][j-1]==1 && map._map[i-1][j]==1)
+						wallDir = "hole_up_left";
+					else if(i!=maxI && j!=maxJ && map._map[i][j+1]==1 && map._map[i+1][j]==1)
+						wallDir = "hole_down_right";
+					else if(i!=0 && j!=maxJ && map._map[i][j+1]==1 && map._map[i-1][j]==1)
+						wallDir = "hole_down_left";
+					else if(i!=maxI && j!=0 && map._map[i][j-1]==1 && map._map[i+1][j]==1)
+						wallDir = "hole_up_right";
+					else if(j!=maxJ && map._map[i][j+1]==1)
+						wallDir = "up1";
+					else if(j!=0 && map._map[i][j-1]==1)
+						wallDir = "down1";
+					else if(i!=0 && map._map[i-1][j]==1)
+						wallDir = "right";
+					else if(i!=maxI && map._map[i+1][j]==1)
+						wallDir = "left";
+					else if (i!=0 && j!=0 && map._map[i-1][j-1]==1)
+						wallDir = "down_right";
+					else if (i!=maxI && j!=maxJ && map._map[i+1][j+1]==1)
+						wallDir = "up_left";
+					else if (i!=0 && j!=maxJ && map._map[i-1][j+1]==1)
+						wallDir = "up_right";
+					else if (i!=maxI && j!=0 && map._map[i+1][j-1]==1)
+						wallDir = "down_left";
+					else
+						isWall = false;
+
+					if(isWall)
+						stage.insert(new Q.CaveWall({x: 16*i*wallScale, y: 16*j*wallScale, dir: wallDir, scale: wallScale}));
+				}
+				else { 	//its floor
+					stage.insert(new Q.CaveFloor({x: 16*i*wallScale, y: 16*j*wallScale, scale: wallScale}));
 				}
 			}
 		}

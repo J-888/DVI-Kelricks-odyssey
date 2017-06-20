@@ -1,4 +1,4 @@
 {
-	"walls":{"sx":0,"sy":0,"tileW":16,"tileH":16,"frames":15, "cols" : 5},
-	"floor":{"sx":0,"sy":48,"tileW":16,"tileH":16,"frames":15, "cols" : 5}
+	"walls":{"sx":0,"sy":0,"tileW":16,"tileH":16,"frames":19, "cols" : 5},
+	"floor":{"sx":0,"sy":64,"tileW":16,"tileH":16,"frames":15, "cols" : 5}
 }
