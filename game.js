@@ -81,19 +81,19 @@ window.addEventListener("load",function() {
 		fly_4dir_left: { frames: [3], rate: 1/4.5}
 	});
 
-	Q.animations('cave walls', {
-		wall_up1: { frames: [1], rate: 1},
-		wall_up2: { frames: [2], rate: 1},
-		wall_up3: { frames: [3], rate: 1},
-		wall_up_left: { frames: [0], rate: 1},
-		wall_up_right: { frames: [4], rate: 1},
-		wall_down1: { frames: [11], rate: 1},
-		wall_down2: { frames: [12], rate: 1},
-		wall_down3: { frames: [13], rate: 1},
-		wall_down_left: { frames: [10], rate: 1},
-		wall_down_right: { frames: [14], rate: 1},
-		wall_left: { frames: [5], rate: 1},
-		wall_right: { frames: [9], rate: 1}
+	Q.animations('cave walls anim', {
+		wall_up1: { frames: [1], rate: 1, loop: true},
+		wall_up2: { frames: [2], rate: 1, loop: true},
+		wall_up3: { frames: [3], rate: 1, loop: true},
+		wall_up_left: { frames: [0], rate: 1, loop: true},
+		wall_up_right: { frames: [4], rate: 1, loop: true},
+		wall_down1: { frames: [11], rate: 1, loop: true},
+		wall_down2: { frames: [12], rate: 1, loop: true},
+		wall_down3: { frames: [13], rate: 1, loop: true},
+		wall_down_left: { frames: [10], rate: 1, loop: true},
+		wall_down_right: { frames: [14], rate: 1, loop: true},
+		wall_left: { frames: [5], rate: 1, loop: true},
+		wall_right: { frames: [9], rate: 1, loop: true}
 	});
 
 	Q.animations('octorok anim', {
@@ -782,6 +782,23 @@ window.addEventListener("load",function() {
 		}
 	});
 
+	Q.Sprite.extend("CaveWall",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "walls"
+			});
+
+			//this.add('2d, animation');
+			//this.add('animation');
+			//this.play("wall_up1");
+
+			//this.on("hit",this,"collision");
+		}
+	});
+
 
 /********************************/
 /************SCENES**************/
@@ -831,7 +848,7 @@ window.addEventListener("load",function() {
 		//Q.stageTMX("level2.tmx",stage);
 		Q.stageTMX("level3.tmx",stage);
 
-		var w = 100, h = 100;	//var w = 80, h = 40;
+		var w = 40, h = 40;	//var w = 80, h = 40;
 		/* create a connected map where the player can reach all non-wall sections */
 		var map = new ROT.Map.Cellular(w, h, { connected: true });
 
@@ -849,9 +866,11 @@ window.addEventListener("load",function() {
 
 		map.connect(callback, 1);
 
-		for(var i = 0; i < map.length; i++) {
-			for(var j = 0; j < map[i].length; j++) {
-
+		for(var i = 0; i < map._map.length; i++) {
+			for(var j = 0; j < map._map[i].length; j++) {
+				if(map._map[i][j] == 0){	//its a wall
+					stage.insert(new Q.CaveWall({x: 16*i, y: 16*j}));
+				}
 			}
 		}
 
@@ -1071,7 +1090,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, credits.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, credits.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -1084,12 +1103,13 @@ window.addEventListener("load",function() {
 		Q.compileSheets("bombThrown.png", "bombThrown.json");
 		Q.compileSheets("explosion.png", "explosion.json");
 		Q.compileSheets("arrow.png", "arrow.json");
+		Q.compileSheets("caveWalls.png", "caveWalls.json");
 		
 		Q.loadTMX("level1.tmx, level2.tmx, level3.tmx", function() {
 			Q.stageScene('titleScreen');
 		});
 
-		Q.debug = true;
+		//Q.debug = true;
 	}, {
 		progressCallback: function(loaded,total) {
 			var element = document.getElementById("loading-bar");
