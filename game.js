@@ -262,6 +262,8 @@ window.addEventListener("load",function() {
 				scale: 1,
 				flip: false,
 				items: [],
+				itemsCooldown: [],
+				itemsDefCooldown: [],
 				type: Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT
 			});
 
@@ -287,6 +289,7 @@ window.addEventListener("load",function() {
 			//console.log("vx:" + this.p.vx);
 			//console.log("vy:" + this.p.vy);
 			//console.log(Q.state.get("currentItem"));
+			console.log(this.p.itemsCooldown);
 			
 			/*if(this.p.vx > 0) {
 				this.play("run_right");
@@ -294,12 +297,20 @@ window.addEventListener("load",function() {
 				this.play("run_left");
 			}*/ 
 
+			this.p.itemsCooldown.forEach(function(part, index, array) {
+				array[index] = Math.max(part - dt, 0);
+			});
+
 
 			this.p.shielding = false;
 
-			if(this.p.justPressedAction && this.p.items.length != 0){
+			var currentItemNumber = Q.state.get("currentItem")%this.p.items.length;
 
-				if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bow"){
+			if(this.p.justPressedAction && this.p.items.length != 0 && this.p.itemsCooldown[currentItemNumber] == 0){
+
+				this.p.itemsCooldown[currentItemNumber] = this.p.itemsDefCooldown[currentItemNumber]
+
+				if(this.p.items[currentItemNumber] == "bow"){
 					var arrowSpeed = 250;
 					var locationX = this.p.x;
 					var locationY = this.p.y;
@@ -320,9 +331,8 @@ window.addEventListener("load",function() {
 						speedX = arrowSpeed;
 					}
 					Q.stage().insert(new Q.Arrow({x: locationX, y: locationY, vx: speedX, vy: speedY, dir: this.p.direction}));
-					//Q.stage().insert(new Q.Octorok_rok({x: locationX, y: locationY, vx: speedX, vy: speedY}));
 				}
-				else if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "bomb"){
+				else if(this.p.items[currentItemNumber] == "bomb"){
 					var grav = 100;
 					var throwSpeed = 50;
 					var margin = 5;
@@ -353,8 +363,8 @@ window.addEventListener("load",function() {
 				}
 			}
 
-			if(this.p.holdingAction && this.p.items.length != 0){
-				if(this.p.items[Q.state.get("currentItem")%this.p.items.length] == "shield"){
+			if(this.p.holdingAction && this.p.items.length != 0){ //no need to check cooldown since its only shield
+				if(this.p.items[currentItemNumber] == "shield"){
 					this.p.shielding = true;
 					var shieldSpeedReduction = 0.5;
 					this.p.vx *= shieldSpeedReduction;
@@ -596,7 +606,16 @@ window.addEventListener("load",function() {
 			this.play("show_content_" + this.p.chestContent);
 		},
 		giveReward: function(collision) {
-			this.p.toPlayer.p.items.push(this.p.chestContent);
+			this.p.toPlayer.p.items.push(this.p.chestContent);			
+			this.p.toPlayer.p.itemsCooldown.push(0);
+
+			if(this.p.chestContent == "shield")
+				this.p.toPlayer.p.itemsDefCooldown.push(0);
+			else if(this.p.chestContent == "bow")
+				this.p.toPlayer.p.itemsDefCooldown.push(1);
+			else if(this.p.chestContent == "bomb")
+				this.p.toPlayer.p.itemsDefCooldown.push(2);
+
 			var currentIndex = Q.state.get("currentItem");
 			var desiredIndex = this.p.toPlayer.p.items.length - 1;
 			if(desiredIndex == 0)	//first item
@@ -903,21 +922,14 @@ window.addEventListener("load",function() {
 		controlsButton.on("click",function() {
 			/*Q.clearStages();
 			Q.stageScene('controlsScreen');*/
-			var a = 1;
 		});
 
 		controlsButton.on("push",function() {
 			/*Q.clearStages();
 			Q.stageScene('controlsScreen');*/
-			var a = 1;
 		});
 
 		creditsButton.on("click",function() {
-			Q.clearStages();
-			Q.stageScene('creditsScreen');
-		});
-
-		creditsButton.on("push",function() {
 			Q.clearStages();
 			Q.stageScene('creditsScreen');
 		});
