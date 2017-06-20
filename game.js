@@ -81,6 +81,21 @@ window.addEventListener("load",function() {
 		fly_4dir_left: { frames: [3], rate: 1/4.5}
 	});
 
+	Q.animations('cave walls', {
+		wall_up1: { frames: [1], rate: 1},
+		wall_up2: { frames: [2], rate: 1},
+		wall_up3: { frames: [3], rate: 1},
+		wall_up_left: { frames: [0], rate: 1},
+		wall_up_right: { frames: [4], rate: 1},
+		wall_down1: { frames: [11], rate: 1},
+		wall_down2: { frames: [12], rate: 1},
+		wall_down3: { frames: [13], rate: 1},
+		wall_down_left: { frames: [10], rate: 1},
+		wall_down_right: { frames: [14], rate: 1},
+		wall_left: { frames: [5], rate: 1},
+		wall_right: { frames: [9], rate: 1}
+	});
+
 	Q.animations('octorok anim', {
 		move_down: { frames: [0,1], rate: 1/4.5},
 		move_up: { frames: [2,3], rate: 1/4.5},
