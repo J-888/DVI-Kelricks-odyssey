@@ -844,9 +844,8 @@ window.addEventListener("load",function() {
 		stage.centerOn(150,380);
 	});
 
-		Q.scene("level2",function(stage) {
-		//Q.stageTMX("level2.tmx",stage);
-		Q.stageTMX("level3.tmx",stage);
+	Q.scene("level2",function(stage) {
+		Q.stageTMX("level2.tmx",stage);
 
 		var w = 40, h = 40;	//var w = 80, h = 40;
 		/* create a connected map where the player can reach all non-wall sections */
@@ -877,25 +876,9 @@ window.addEventListener("load",function() {
 		//stage.insert(new Q.Gate({x: 1216, y: 1232}));
 		
 		/*SPAWN PLAYER*/
-		var player = stage.insert(new Q.Player({x: 520, y: 260}));
+		var player = stage.insert(new Q.Player({x: 216, y: 367}));
 
-		/*SPAWN ENEMIES*/
-
-		/*stage.insert(new Q.Skull({x: 690, y: 485}));
-		stage.insert(new Q.Skull({x: 615, y: 615}));
-		stage.insert(new Q.Skull({x: 679, y: 905}));
-		stage.insert(new Q.Octorok({x: 867, y: 1081}));
-		stage.insert(new Q.Octorok({x: 1184, y: 715}));
-		stage.insert(new Q.Skeleton({x: 1411, y: 685}));
-		stage.insert(new Q.Skeleton({x: 1284, y: 838}));
-		stage.insert(new Q.Skeleton({x: 1121, y: 1279}));
-		stage.insert(new Q.Skeleton({x: 1372, y: 1536}));*/
-
-
-		/*stage.insert(new Q.Octorok({x: 300, y: 300}));
-		stage.insert(new Q.Skeleton({x: 400, y: 400}));
-		stage.insert(new Q.Skull({x: 430, y: 430}));*/
-
+		/*SPAWN BOSS*/
 
 		/*VIEWPORT*/
 		var vp = stage.add("viewport");
