@@ -101,7 +101,7 @@ window.addEventListener("load",function() {
 	});
 
 	Q.animations('bombThrown anim', {
-		burn: { frames: [0], rate: 2, loop: false, trigger: "explode"}
+		burn: { frames: [0], rate: 1, loop: false, trigger: "explode"}
 	});
 
 	Q.animations('explosion anim', {
@@ -352,7 +352,7 @@ window.addEventListener("load",function() {
 						speedY = throwSpeed;
 						grav = -0.25*grav;
 					} else if(this.p.direction == "left"){
-						locationX -= (this.p.cy + margin);
+						locationX -= (this.p.cx + margin);
 						speedX = - throwSpeed;
 					} else if(this.p.direction == "right"){
 						locationX += this.p.cx + margin;
