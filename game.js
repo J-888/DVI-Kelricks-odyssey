@@ -343,6 +343,12 @@ window.addEventListener("load",function() {
 
 			this.p.shielding = false;
 
+			if(Q.state.get("currentItem") < 0){
+				var realNum = ((Q.state.get("currentItem")%this.p.items.length)+this.p.items.length)%this.p.items.length;
+				var deviation = realNum - Q.state.get("currentItem");
+				Q.state.inc("currentItem",deviation);
+			}
+
 			var currentItemNumber = Q.state.get("currentItem")%this.p.items.length;
 
 			if(this.p.justPressedAction && this.p.items.length != 0 && this.p.itemsCooldown[currentItemNumber] == 0){
@@ -798,10 +804,16 @@ window.addEventListener("load",function() {
 		},
 		sensor: function(collision) {
 			if(collision.isA("Player")) { 
+
+				this.destroy();
+
+				var currentPlayer = Q("Player").first();
+				var options = {pItems: currentPlayer.p.items, pItemsDefCooldown: currentPlayer.p.itemsDefCooldown};
+
 				//Q.clearStages();
 				Q.clearStage(0);
 				Q.state.inc("level",1);
-				Q.stageScene('caveLevel');
+				Q.stageScene('caveLevel', options);
 			}
 		}
 	});
@@ -825,14 +837,22 @@ window.addEventListener("load",function() {
 		},
 		sensor: function(collision) {
 			if(collision.isA("Player")) { 
+
 				this.destroy();
+
+				var currentPlayer = Q("Player").first();
+				var options = {pItems: currentPlayer.p.items, pItemsDefCooldown: currentPlayer.p.itemsDefCooldown};
+
 				//Q.clearStages();
 				Q.clearStage(0);
 				Q.state.inc("level",1);
+
+
 				if(Q.state.get("level") == 5)
-					Q.stageScene('bossLevel');
+					Q.stageScene('bossLevel', options);
 				else
-					Q.stageScene('caveLevel');
+					Q.stageScene('caveLevel', options);
+
 			}
 		}
 	});
@@ -1045,24 +1065,53 @@ window.addEventListener("load",function() {
 
 		var playerLocationFound = false;
 
-		for(var i = 0; (i < map._map.length - 1) && !playerLocationFound; i++) {
-			for(var j =  map._map[i].length - 1; (j > 0) && !playerLocationFound; j--) {
+		for(var j = map._map.length - 1; (j > 0) && !playerLocationFound; j--) {
+			for(var i =  0; (i < map._map[j].length - 1) && !playerLocationFound; i++) {
 				//console.log("x: " + i + ", y: " + j);
-				if(map._map[i][j]==1 && map._map[i+1][j]==1 && map._map[i][j+1]==1 && map._map[i+1][j+1]==1){
+				if(map._map[i][j]==1 && map._map[i+1][j]==1 && map._map[i][j-1]==1 && map._map[i+1][j-1]==1){
 					playerLocationFound = true;
-					playerSpawnX = 16*wallScale*i + 0.5;
-					playerSpawnY = 16*wallScale*j + 0.5;
+					
+					playerSpawnX = 16*wallScale*(i + 0.5);
+					playerSpawnY = 16*wallScale*(j - 0.5);
+
+					/*mark the space as used*/
+					map._map[i][j] = 2;
+					map._map[i+1][j] = 2;
+					map._map[i][j-1] = 2;
+					map._map[i+1][j-1] = 2;
 				}
 			}
 		}
 		
 		/*SPAWN PLAYER*/
-		var player = stage.insert(new Q.Player({x: playerSpawnX, y: playerSpawnY}));
+		var itemNum = stage.options.pItems.length;
+		var player = stage.insert(new Q.Player({x: playerSpawnX, y: playerSpawnY, items: stage.options.pItems, itemsCooldown: new Array(itemNum+1).join('0').split('').map(parseFloat), itemsDefCooldown: stage.options.pItemsDefCooldown}));
 
+		/*search hole spawn location*/
+		var holeSpawnX;
+		var holeSpawnY;
 
-		stage.insert(new Q.CaveHole({x: playerSpawnX + 50, y: playerSpawnY + 50, scale: wallScale}));
+		var holeLocationFound = false;
 
-		/*SPAWN BOSS*/
+		for(var j = 0; (j < map._map.length) && !holeLocationFound; j++) {
+			for(var i = map._map[j].length-1; (i >= 0) && !holeLocationFound; i--) {
+				//console.log("x: " + i + ", y: " + j);
+				if(map._map[i][j]==1){
+					holeLocationFound = true;
+					
+					holeSpawnX = 16*wallScale*i;
+					holeSpawnY = 16*wallScale*j;
+
+					/*mark the space as used*/
+					map._map[i][j] = 2;
+				}
+			}
+		}
+
+		/*SPAWN HOLE*/
+		stage.insert(new Q.CaveHole({x: holeSpawnX, y: holeSpawnY, scale: wallScale}));
+
+		/*SPAWN ENEMIES*/
 
 		/*VIEWPORT*/
 		var vp = stage.add("viewport");
@@ -1075,11 +1124,10 @@ window.addEventListener("load",function() {
 
 	Q.scene("bossLevel",function(stage) {
 		Q.stageTMX("bossLevel.tmx",stage);
-
-		//stage.insert(new Q.Gate({x: 1216, y: 1232}));
 		
 		/*SPAWN PLAYER*/
-		var player = stage.insert(new Q.Player({x: 216, y: 367}));
+		var itemNum = stage.options.pItems.length;
+		var player = stage.insert(new Q.Player({x: 216, y: 367, items: stage.options.pItems, itemsCooldown: new Array(itemNum+1).join('0').split('').map(parseFloat), itemsDefCooldown: stage.options.pItemsDefCooldown}));
 
 		/*SPAWN BOSS*/
 
@@ -1188,12 +1236,12 @@ window.addEventListener("load",function() {
 		startButton.on("click",function() {
 			Q.clearStages();
 
-			/*Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
-			Q.stageScene('forestLevel');*/
+			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+			Q.stageScene('forestLevel');
 
 			/*DEBUG*/
-			Q.state.reset({ level: 4, lives: 5, currentItem: 0 });
-			Q.stageScene('caveLevel');
+			/*Q.state.reset({ level: 2, lives: 5, currentItem: 0 });
+			Q.stageScene('caveLevel');*/
 
 			Q.stageScene("HUD",1);
 		});
