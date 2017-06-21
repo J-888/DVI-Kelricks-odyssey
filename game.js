@@ -798,8 +798,9 @@ window.addEventListener("load",function() {
 		},
 		sensor: function(collision) {
 			if(collision.isA("Player")) { 
-				Q.clearStages();
-				Q.stageScene('titleScreen');
+				//Q.clearStages();
+				Q.state.inc("level",1)
+				Q.stageScene('caveLevel');
 			}
 		}
 	});
@@ -832,6 +833,7 @@ window.addEventListener("load",function() {
 				sheet: "floor",
 				sprite: "cave floor anim",
 				sensor: true,
+				points: [[0,0],[0,0],[0,0],[0,0]],
 				collisionMask: Q.SPRITE_NONE,
 				type: Q.SPRITE_NONE
 			});
@@ -847,8 +849,8 @@ window.addEventListener("load",function() {
 /************SCENES**************/
 /********************************/	
 
-	Q.scene("level1",function(stage) {
-		Q.stageTMX("level1.tmx",stage);
+	Q.scene("forestLevel",function(stage) {
+		Q.stageTMX("forestLevel.tmx",stage);
 
 		stage.insert(new Q.Gate({x: 1216, y: 1232}));
 		
@@ -887,11 +889,24 @@ window.addEventListener("load",function() {
 		stage.centerOn(150,380);
 	});
 
-	Q.scene("level2",function(stage) {
-		Q.stageTMX("level2.tmx",stage);
-		//Q.stageTMX("level3.tmx",stage);
+	Q.scene("caveLevel",function(stage) {
+		Q.stageTMX("caveLevel.tmx",stage);
 
-		var w = 40, h = 40;
+		var w, h;
+
+		if(Q.state.get("level") == 2) {
+			w = 10;
+			h = 10;
+		}
+		if(Q.state.get("level") == 3) {
+			w = 20;
+			h = 20;
+		}
+		else if (Q.state.get("level") == 4){
+			w = 30;
+			h = 30;
+		}
+
 		var wallScale = 2;
 		/* create a connected map where the player can reach all non-wall sections */
 		var map = new ROT.Map.Cellular(w, h, { connected: true });
@@ -910,6 +925,25 @@ window.addEventListener("load",function() {
 
 		map.connect(callback, 1);
 
+		/*delete thin walls*/
+		var changedThinWalls = true;
+		while (changedThinWalls) {
+			changedThinWalls = false;
+			for(var i = 0; i < map._map.length; i++) {
+				for(var j = 0; j < map._map[i].length; j++) {
+					if(i!=0 && i!=map._map.length-1 && map._map[i][j]==0 && map._map[i-1][j]==1 && map._map[i+1][j]==1){
+						map._map[i][j] = 1;
+						changedThinWalls = true;
+					}
+					else if(j!=0 && j!=map._map[i].length-1 && map._map[i][j]==0 && map._map[i][j-1]==1 && map._map[i][j+1]==1){
+						map._map[i][j] = 1;
+						changedThinWalls = true;
+					}
+				}
+			}
+		}
+
+		/*create the sprites*/
 		for(var i = 0; i < map._map.length; i++) {
 			for(var j = 0; j < map._map[i].length; j++) {
 				var maxI = map._map.length-1;
@@ -970,8 +1004,8 @@ window.addEventListener("load",function() {
 		stage.centerOn(150,380);
 	});
 
-	Q.scene("level3",function(stage) {
-		Q.stageTMX("level3.tmx",stage);
+	Q.scene("bossLevel",function(stage) {
+		Q.stageTMX("bossLevel.tmx",stage);
 
 		//stage.insert(new Q.Gate({x: 1216, y: 1232}));
 		
@@ -1084,17 +1118,20 @@ window.addEventListener("load",function() {
 
 		startButton.on("click",function() {
 			Q.clearStages();
-			Q.state.reset({ level: 2, lives: 5, currentItem: 0 });
-			//Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
-			Q.stageScene('level' + Q.state.get("level"));
+
+			/*Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+			Q.stageScene('forestLevel');*/
+
+			Q.state.reset({ level: 4, lives: 5, currentItem: 0 });
+			Q.stageScene('caveLevel');
+
 			Q.stageScene("HUD",1);
 		});
 
 		startButton.on("push",function() {
 			Q.clearStages();
-			Q.state.reset({ level: 2, lives: 5, currentItem: 0 });
-			//Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
-			Q.stageScene('level' + Q.state.get("level"));
+			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+			Q.stageScene('forestLevel');
 			Q.stageScene("HUD",1);
 		});
 
@@ -1169,7 +1206,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("arrow.png", "arrow.json");
 		Q.compileSheets("caveWalls.png", "caveWalls.json");
 		
-		Q.loadTMX("level1.tmx, level2.tmx, level3.tmx", function() {
+		Q.loadTMX("forestLevel.tmx, caveLevel.tmx, bossLevel.tmx", function() {
 			Q.stageScene('titleScreen');
 		});
 
