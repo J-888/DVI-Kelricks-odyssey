@@ -799,6 +799,7 @@ window.addEventListener("load",function() {
 		sensor: function(collision) {
 			if(collision.isA("Player")) { 
 				//Q.clearStages();
+				Q.clearStage(0);
 				Q.state.inc("level",1)
 				Q.stageScene('caveLevel');
 			}
@@ -818,9 +819,11 @@ window.addEventListener("load",function() {
 
 			//this.add('2d, animation');
 			this.add('animation');
-			this.play("wall_" + this.p.dir);
 
-			//this.on("hit",this,"collision");
+			if(this.p.dir == "up" || this.p.dir == "down")
+				this.p.dir +=  Math.floor((Math.random() * 3) + 1);
+
+			this.play("wall_" + this.p.dir);
 		}
 	});
 
@@ -961,9 +964,9 @@ window.addEventListener("load",function() {
 					else if(i!=maxI && j!=0 && map._map[i][j-1]==1 && map._map[i+1][j]==1)
 						wallDir = "hole_up_right";
 					else if(j!=maxJ && map._map[i][j+1]==1)
-						wallDir = "up1";
+						wallDir = "up";
 					else if(j!=0 && map._map[i][j-1]==1)
-						wallDir = "down1";
+						wallDir = "down";
 					else if(i!=0 && map._map[i-1][j]==1)
 						wallDir = "right";
 					else if(i!=maxI && map._map[i+1][j]==1)
@@ -988,10 +991,25 @@ window.addEventListener("load",function() {
 			}
 		}
 
-		//stage.insert(new Q.Gate({x: 1216, y: 1232}));
+		/*search player spawn location*/
+		var playerSpawnX;
+		var playerSpawnY;
+
+		var playerLocationFound = false;
+
+		for(var i = 0; (i < map._map.length - 1) && !playerLocationFound; i++) {
+			for(var j =  map._map[i].length - 1; (j > 0) && !playerLocationFound; j--) {
+				//console.log("x: " + i + ", y: " + j);
+				if(map._map[i][j]==1 && map._map[i+1][j]==1 && map._map[i][j+1]==1 && map._map[i+1][j+1]==1){
+					playerLocationFound = true;
+					playerSpawnX = 16*wallScale*i + 0.5;
+					playerSpawnY = 16*wallScale*j + 0.5;
+				}
+			}
+		}
 		
 		/*SPAWN PLAYER*/
-		var player = stage.insert(new Q.Player({x: 216, y: 367}));
+		var player = stage.insert(new Q.Player({x: playerSpawnX, y: playerSpawnY}));
 
 		/*SPAWN BOSS*/
 
@@ -1122,6 +1140,7 @@ window.addEventListener("load",function() {
 			/*Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('forestLevel');*/
 
+			/*DEBUG*/
 			Q.state.reset({ level: 4, lives: 5, currentItem: 0 });
 			Q.stageScene('caveLevel');
 
