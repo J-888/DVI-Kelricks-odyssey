@@ -71,6 +71,11 @@ window.addEventListener("load",function() {
 		move_flipped: { frames: [0,1], rate: 1/4.5, flip: "x"}
 	});
 
+	Q.animations('boss anim', {
+		move: { frames: [0,1,2,3,4,5,6,7,8,9], rate: 1/4.5, flip: "x"},
+		move_flipped: { frames: [0,1,2,3,4,5,6,7,8,9], rate: 1/4.5, flip: "x"}
+	});
+
 
 	Q.animations('projectile anim', {
 		fly_1: { frames: [0], rate: 1/4.5},
@@ -153,7 +158,8 @@ window.addEventListener("load",function() {
 		added: function () {
 			this.entity.p.collisionMask = Q.SPRITE_ENEMY | Q.SPRITE_ACTIVE | Q.SPRITE_DEFAULT;
 			this.entity.p.type = Q.SPRITE_ENEMY;
-			this.entity.p.hp = 25;
+			if (this.entity.p.hp == undefined)
+				this.entity.p.hp = 25;
 
 			this.entity.on("die",this.entity,"die");
 
@@ -612,6 +618,23 @@ window.addEventListener("load",function() {
 				name: "skull",
 				sheet: "skull_move_down",
 				sprite: "skull anim"
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, tween, defaultEnemy, aiChase, customPlayAnim');
+		}
+	});
+
+	Q.Sprite.extend("Boss",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				name: "boss",
+				sheet: "boss_move_down",
+				sprite: "boss anim",
+				hp: 200
 			});
 
 			// Add in pre-made components to get up and running quickly
@@ -1084,7 +1107,11 @@ window.addEventListener("load",function() {
 		}
 		
 		/*SPAWN PLAYER*/
-		var itemNum = stage.options.pItems.length;
+		var itemNum 
+		if(stage.options.pItems != undefined)
+			itemNum = stage.options.pItems.length;
+		else
+			itemNum = 0;
 		var player = stage.insert(new Q.Player({x: playerSpawnX, y: playerSpawnY, items: stage.options.pItems, itemsCooldown: new Array(itemNum+1).join('0').split('').map(parseFloat), itemsDefCooldown: stage.options.pItemsDefCooldown}));
 
 		/*search hole spawn location*/
@@ -1126,10 +1153,15 @@ window.addEventListener("load",function() {
 		Q.stageTMX("bossLevel.tmx",stage);
 		
 		/*SPAWN PLAYER*/
-		var itemNum = stage.options.pItems.length;
+		var itemNum 
+		if(stage.options.pItems != undefined)
+			itemNum = stage.options.pItems.length;
+		else
+			itemNum = 0;
 		var player = stage.insert(new Q.Player({x: 216, y: 367, items: stage.options.pItems, itemsCooldown: new Array(itemNum+1).join('0').split('').map(parseFloat), itemsDefCooldown: stage.options.pItemsDefCooldown}));
 
 		/*SPAWN BOSS*/
+		var boss = stage.insert(new Q.Boss({x: 216, y: 180}));
 
 		/*VIEWPORT*/
 		var vp = stage.add("viewport");
@@ -1336,7 +1368,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, credits.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -1344,6 +1376,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("octorok.png", "octorok.json");
 		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
 		Q.compileSheets("skullMovement.png", "skullMovement.json");
+		Q.compileSheets("boss.png", "boss.json");
 		Q.compileSheets("overworld.png", "overworld.json");
 		Q.compileSheets("chest.png", "chest.json");
 		Q.compileSheets("bombThrown.png", "bombThrown.json");
