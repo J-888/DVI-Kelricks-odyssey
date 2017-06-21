@@ -824,6 +824,15 @@ window.addEventListener("load",function() {
 				this.p.dir +=  Math.floor((Math.random() * 3) + 1);
 
 			this.play("wall_" + this.p.dir);
+
+			if(this.p.dir == "hole_up_left")
+				this.p.points = [/*[-8,-8],*/[8,-8],[8,8],[-8,8]];
+			else if(this.p.dir == "hole_up_right")
+				this.p.points = [[-8,-8],/*[8,-8],*/[8,8],[-8,8]];
+			else if(this.p.dir == "hole_down_left")
+				this.p.points = [[-8,-8],[8,-8],[8,8]/*,[-8,8]*/];
+			else if(this.p.dir == "hole_down_right")
+				this.p.points = [[-8,-8],[8,-8],/*[8,8],*/[-8,8]];
 		}
 	});
 
@@ -898,8 +907,8 @@ window.addEventListener("load",function() {
 		var w, h;
 
 		if(Q.state.get("level") == 2) {
-			w = 10;
-			h = 10;
+			w = 15;
+			h = 15;
 		}
 		if(Q.state.get("level") == 3) {
 			w = 20;
@@ -927,6 +936,14 @@ window.addEventListener("load",function() {
 		var callback = function(){};
 
 		map.connect(callback, 1);
+
+		/*add extra layer*/
+		map._map.push(new Array(h+1).join('0').split('').map(parseFloat));
+		map._map.unshift(new Array(h+1).join('0').split('').map(parseFloat));
+		for(var i = 0; i < map._map.length; i++) {
+			map._map[i].push(0);
+			map._map[i].unshift(0);
+		}
 
 		/*delete thin walls*/
 		var changedThinWalls = true;
