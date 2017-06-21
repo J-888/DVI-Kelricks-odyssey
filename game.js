@@ -800,8 +800,39 @@ window.addEventListener("load",function() {
 			if(collision.isA("Player")) { 
 				//Q.clearStages();
 				Q.clearStage(0);
-				Q.state.inc("level",1)
+				Q.state.inc("level",1);
 				Q.stageScene('caveLevel');
+			}
+		}
+	});
+
+	Q.Sprite.extend("CaveHole",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "caveHole",
+				sensor: true,
+				collisionMask: Q.SPRITE_FRIENDLY,
+			});
+
+			// Add in pre-made components to get up and running quickly
+			// The `2d` component adds in default 2d collision detection
+			// and kinetics (velocity, gravity)
+			this.on("sensor");
+
+		},
+		sensor: function(collision) {
+			if(collision.isA("Player")) { 
+				this.destroy();
+				//Q.clearStages();
+				Q.clearStage(0);
+				Q.state.inc("level",1);
+				if(Q.state.get("level") == 5)
+					Q.stageScene('bossLevel');
+				else
+					Q.stageScene('caveLevel');
 			}
 		}
 	});
@@ -1028,6 +1059,9 @@ window.addEventListener("load",function() {
 		/*SPAWN PLAYER*/
 		var player = stage.insert(new Q.Player({x: playerSpawnX, y: playerSpawnY}));
 
+
+		stage.insert(new Q.CaveHole({x: playerSpawnX + 50, y: playerSpawnY + 50, scale: wallScale}));
+
 		/*SPAWN BOSS*/
 
 		/*VIEWPORT*/
@@ -1227,7 +1261,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, credits.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, mainTitle.jpg, credits.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -1241,6 +1275,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("explosion.png", "explosion.json");
 		Q.compileSheets("arrow.png", "arrow.json");
 		Q.compileSheets("caveWalls.png", "caveWalls.json");
+		Q.compileSheets("caveHole.png", "caveHole.json");
 		
 		Q.loadTMX("forestLevel.tmx, caveLevel.tmx, bossLevel.tmx", function() {
 			Q.stageScene('titleScreen');
