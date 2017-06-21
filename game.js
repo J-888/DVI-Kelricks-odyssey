@@ -1257,6 +1257,33 @@ window.addEventListener("load",function() {
 		container.fit(20);
 	});
 
+	Q.scene('controlsScreen',function(stage) {
+		var bgImg = "credits.jpg";
+
+		var imgw = Q.assets[bgImg].width;
+		var imgh = Q.assets[bgImg].height;
+		//var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+		var imgScale = Q.height/imgh;
+
+		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
+		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale, keyActionName:['confirm', 'fire', 'action'] }))
+		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/2.5, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "Controls" }));
+
+		var nameMovement = container.insert(new Q.UI.Text({x: 0, y: -Q.height/6, weight: 100, size: 40, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Movement: W,A,S,D" }));
+		var nameSword = container.insert(new Q.UI.Text({x: 0, y: -Q.height/14, weight: 100, size: 40, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Sword Attack: Z" }));
+		var nameItem = container.insert(new Q.UI.Text({x: 0, y: Q.height/40, weight: 100, size: 40, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Item Attack: X" }));
+		var nameChangeItem = container.insert(new Q.UI.Text({x: 0, y: Q.height/8, weight: 100, size: 40, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Change Item: Q,E" }));
+
+		var back = container.insert(new Q.UI.Text({x: 0, y: Q.height/3, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Back" }));
+
+		button.on("click",function() {
+			Q.clearStages();
+		Q.stageScene('titleScreen');
+		});
+
+		container.fit(20);
+	});
+
 /********************************/
 /*************LOAD***************/
 /********************************/
