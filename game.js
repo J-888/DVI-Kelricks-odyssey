@@ -1476,8 +1476,8 @@ window.addEventListener("load",function() {
 		var creditsButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*13/32}));
 		var credits = creditsButton.insert(new Q.UI.Text({weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Credits" }));
 
-		var upButton = container.insert(new Q.UI.Button({ x: 0, y: 0, keyActionName:['up'] }));
-		var downButton = container.insert(new Q.UI.Button({ x: 0, y: 0, keyActionName:['down'] }));
+		var upButton = container.insert(new Q.UI.Button({ x: 0, y: 0, keyActionName:['up', 'previousItem'] }));
+		var downButton = container.insert(new Q.UI.Button({ x: 0, y: 0, keyActionName:['down', 'nextItem'] }));
 		var enterButton = container.insert(new Q.UI.Button({ x: 0, y: 0, keyActionName:['confirm', 'fire', 'action'] }));
 
 		upButton.on("click",function() {
