@@ -1347,7 +1347,7 @@ window.addEventListener("load",function() {
 		var name1 = container.insert(new Q.UI.Text({x: 0, y: -Q.height/16, weight: 100, size: 40, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Héctor Malagón Roldán" }));
 		var name2 = container.insert(new Q.UI.Text({x: 0, y: Q.height/16, weight: 100, size: 40, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "José Miguel Tajuelo Garrigós" }));
 
-		var back = container.insert(new Q.UI.Text({x: 0, y: Q.height/3, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Back" }));
+		var back = container.insert(new Q.UI.Text({x: 0, y: Q.height/3, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Main Menu" }));
 
 		button.on("click",function() {
 			Q.clearStages();
@@ -1406,11 +1406,58 @@ window.addEventListener("load",function() {
 		container.fit(20);
 	});
 
+	Q.scene('endingScreen',function(stage) {
+		var bgImg = "ending.jpg";
+
+		var imgw = Q.assets[bgImg].width;
+		var imgh = Q.assets[bgImg].height;
+		//var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+		var imgScale = Q.height/imgh;
+
+		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
+		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale, keyActionName:['confirm', 'fire', 'action'] }))
+		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/2.5, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "The End" }));
+
+		var back = container.insert(new Q.UI.Text({x: 0, y: Q.height/3, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Continue" }));
+
+		button.on("click",function() {
+			Q.clearStages();
+			Q.stageScene('playAgainScreen');
+		});
+
+		container.fit(20);
+	});
+
+	Q.scene('playAgainScreen',function(stage) {
+		var bgImg = "credits.jpg";
+
+		var imgw = Q.assets[bgImg].width;
+		var imgh = Q.assets[bgImg].height;
+		//var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+		var imgScale = Q.height/imgh;
+
+		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
+		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale, keyActionName:['confirm', 'fire', 'action'] }))
+		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/3, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "Be sure to play again" }));
+
+		var name1 = container.insert(new Q.UI.Text({x: 0, y: -Q.height/16, weight: 100, size: 40, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Each adventure is different" }));
+		var name2 = container.insert(new Q.UI.Text({x: 0, y: Q.height/16, weight: 100, size: 40, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "due to the procedurally generated caves" }));
+
+		var back = container.insert(new Q.UI.Text({x: 0, y: Q.height/3, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Credits" }));
+
+		button.on("click",function() {
+			Q.clearStages();
+			Q.stageScene('creditsScreen');
+		});
+
+		container.fit(20);
+	});
+
 /********************************/
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, gameOver.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, gameOver.jpg, ending.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
