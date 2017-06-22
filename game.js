@@ -1223,6 +1223,9 @@ window.addEventListener("load",function() {
 		var playerSpawnX;
 		var playerSpawnY;
 
+		var playerSpawnXTile;
+		var playerSpawnYTile;
+
 		var playerLocationFound = false;
 
 		for(var j = map._map.length - 1; (j > 0) && !playerLocationFound; j--) {
@@ -1230,7 +1233,11 @@ window.addEventListener("load",function() {
 				//console.log("x: " + i + ", y: " + j);
 				if(map._map[i][j]==1 && map._map[i+1][j]==1 && map._map[i][j-1]==1 && map._map[i+1][j-1]==1){
 					playerLocationFound = true;
-					
+
+					playerSpawnXTile = i + 0.5;
+					playerSpawnYTile = j - 0.5;
+
+
 					playerSpawnX = 16*wallScale*(i + 0.5);
 					playerSpawnY = 16*wallScale*(j - 0.5);
 
@@ -1299,7 +1306,46 @@ window.addEventListener("load",function() {
 		/*SPAWN CHEST*/
 		stage.insert(new Q.Chest({x: chestSpawnX, y: chestSpawnY, chestContent:"heart"}));
 
+
+		/*search enemy spawn locations*/
+		var freeLocations = [];
+		var playerSafeRadius = 5;
+		for(var j = 0; j < map._map.length; j++) {
+			for(var i = map._map[j].length-1; i >= 0; i--) {
+				if (map._map[i][j]==1 && Math.abs(i - playerSpawnXTile) > playerSafeRadius && Math.abs(j - playerSpawnYTile) > playerSafeRadius)
+					freeLocations.push([i, j]);
+			}
+		}
+
 		/*SPAWN ENEMIES*/
+		var pendingEnemies;
+		if(Q.state.get("level") == 2) {
+			pendingEnemies = 3;
+		}
+		if(Q.state.get("level") == 3) {
+			pendingEnemies = 5;
+		}
+		else if (Q.state.get("level") == 4){
+			pendingEnemies = 8;
+		}
+
+		while(pendingEnemies > 0 && freeLocations.length > 0){
+			pendingEnemies--;
+			var selectedSpot = Math.floor(Math.random() * freeLocations.length);
+
+			var enemyX = 16*wallScale*freeLocations[selectedSpot][0];
+			var enemyY = 16*wallScale*freeLocations[selectedSpot][1];
+
+			var selectedEnemy = Math.floor(Math.random() * 2);
+			if (selectedEnemy == 0)
+				stage.insert(new Q.Octorok({x: enemyX, y: enemyY}));
+			else if (selectedEnemy == 1)
+				stage.insert(new Q.Skeleton({x: enemyX, y: enemyY}));
+			else if (selectedEnemy == 2)
+				stage.insert(new Q.Skull({x: enemyX, y: enemyY}));
+
+			freeLocations.splice(selectedSpot, 1);
+		}
 
 		/*VIEWPORT*/
 		var vp = stage.add("viewport");
