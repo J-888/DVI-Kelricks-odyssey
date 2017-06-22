@@ -1463,18 +1463,89 @@ window.addEventListener("load",function() {
 		//var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
 		var imgScale = Q.height/imgh;
 
-		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
-		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale/*, keyActionName:['confirm', 'fire', 'action']*/ }));
+		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)", menuIndex: 0 }));
+		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale}));
 		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/4, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "Kelrick's Odyssey" }));
 
-		var startButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*7/32, keyActionName:['confirm', 'fire'/*, 'action'*/] }));
+		var startButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*7/32 }));
 		var start = startButton.insert(new Q.UI.Text({weight: 100, size: 50, family: "Hylia", color: "#00FFFF", outlineColor: "#000000", outlineWidth: 6, label: "Press Start" }));
 
-		var controlsButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*10/32}));
+		var controlsButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*10/32 }));
 		var controls = controlsButton.insert(new Q.UI.Text({weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Controls" }));
 
-		var creditsButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*13/32, keyActionName:['action'] }));
+		var creditsButton = container.insert(new Q.UI.Button({ x: 0, y: Q.height*13/32}));
 		var credits = creditsButton.insert(new Q.UI.Text({weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Credits" }));
+
+		var upButton = container.insert(new Q.UI.Button({ x: 0, y: 0, keyActionName:['up'] }));
+		var downButton = container.insert(new Q.UI.Button({ x: 0, y: 0, keyActionName:['down'] }));
+		var enterButton = container.insert(new Q.UI.Button({ x: 0, y: 0, keyActionName:['confirm', 'fire', 'action'] }));
+
+		upButton.on("click",function() {
+			var highlightColor = "#00FFFF";
+			var defColor = "#FFFFFF";
+
+			var cIndex = (((this.container.p.menuIndex - 1)%3)+3)%3;
+			this.container.p.menuIndex = cIndex;
+
+			if(cIndex == 0){
+				this.container.children[2].children[0].p.color = highlightColor;
+				this.container.children[3].children[0].p.color = defColor;
+				this.container.children[4].children[0].p.color = defColor;
+			}
+			else if (cIndex == 1){
+				this.container.children[2].children[0].p.color = defColor;
+				this.container.children[3].children[0].p.color = highlightColor;
+				this.container.children[4].children[0].p.color = defColor;
+			}
+			else{
+				this.container.children[2].children[0].p.color = defColor;
+				this.container.children[3].children[0].p.color = defColor;
+				this.container.children[4].children[0].p.color = highlightColor;
+			}
+		});
+
+		downButton.on("click",function() {
+			var highlightColor = "#00FFFF";
+			var defColor = "#FFFFFF";
+
+			var cIndex = (((this.container.p.menuIndex + 1)%3)+3)%3;
+			this.container.p.menuIndex = cIndex;
+
+			if(cIndex == 0){
+				this.container.children[2].children[0].p.color = highlightColor;
+				this.container.children[3].children[0].p.color = defColor;
+				this.container.children[4].children[0].p.color = defColor;
+			}
+			else if (cIndex == 1){
+				this.container.children[2].children[0].p.color = defColor;
+				this.container.children[3].children[0].p.color = highlightColor;
+				this.container.children[4].children[0].p.color = defColor;
+			}
+			else{
+				this.container.children[2].children[0].p.color = defColor;
+				this.container.children[3].children[0].p.color = defColor;
+				this.container.children[4].children[0].p.color = highlightColor;
+			}
+		});
+
+		enterButton.on("click",function() {
+			if(this.container.p.menuIndex == 0) {
+				Q.clearStages();
+
+				Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+				Q.stageScene('forestLevel');
+
+				Q.stageScene("HUD",1);
+			}
+			else if(this.container.p.menuIndex == 1) {
+				Q.clearStages();
+				Q.stageScene('controlsScreen');
+			}
+			else if(this.container.p.menuIndex == 2) {
+				Q.clearStages();
+				Q.stageScene('creditsScreen');
+			}
+		});
 
 		startButton.on("click",function() {
 			Q.clearStages();
@@ -1482,28 +1553,12 @@ window.addEventListener("load",function() {
 			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
 			Q.stageScene('forestLevel');
 
-			/*DEBUG*/
-			/*Q.state.reset({ level: 2, lives: 5, currentItem: 0 });
-			Q.stageScene('caveLevel');*/
-
-			Q.stageScene("HUD",1);
-		});
-
-		startButton.on("push",function() {
-			Q.clearStages();
-			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
-			Q.stageScene('forestLevel');
 			Q.stageScene("HUD",1);
 		});
 
 		controlsButton.on("click",function() {
-			/*Q.clearStages();
-			Q.stageScene('controlsScreen');*/
-		});
-
-		controlsButton.on("push",function() {
-			/*Q.clearStages();
-			Q.stageScene('controlsScreen');*/
+			Q.clearStages();
+			Q.stageScene('controlsScreen');
 		});
 
 		creditsButton.on("click",function() {
