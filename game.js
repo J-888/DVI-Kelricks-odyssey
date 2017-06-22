@@ -1275,6 +1275,30 @@ window.addEventListener("load",function() {
 		/*SPAWN HOLE*/
 		stage.insert(new Q.CaveHole({x: holeSpawnX, y: holeSpawnY, scale: wallScale}));
 
+		/*search heart chest spawn location*/
+		var chestSpawnX;
+		var chestSpawnY;
+
+		var chestLocationFound = false;
+
+		for(var j = 0; (j < map._map.length) && !chestLocationFound; j++) {
+			for(var i = 0; (i < map._map[j].length) && !chestLocationFound; i++) {
+				console.log("x: " + i + ", y: " + j);
+				if(map._map[i][j]==1){
+					chestLocationFound = true;
+					
+					chestSpawnX = 16*wallScale*i;
+					chestSpawnY = 16*wallScale*j;
+
+					/*mark the space as used*/
+					map._map[i][j] = 2;
+				}
+			}
+		}
+
+		/*SPAWN CHEST*/
+		stage.insert(new Q.Chest({x: chestSpawnX, y: chestSpawnY, chestContent:"heart"}));
+
 		/*SPAWN ENEMIES*/
 
 		/*VIEWPORT*/
