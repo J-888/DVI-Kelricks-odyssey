@@ -139,6 +139,9 @@ window.addEventListener("load",function() {
 		show_content_bow: { frames: [4], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
 		show_content_bomb: { frames: [5], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
 		show_content_shield: { frames: [6], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_firestaff: { frames: [7], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_icestaff: { frames: [8], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_heart: { frames: [9], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
 		opened: { frames: [3], rate: 1/4.5, loop: false}
 	});
 
@@ -467,7 +470,7 @@ window.addEventListener("load",function() {
 				
 				if(Q.state.get("lives") == 0){
 					/********GOD MODE***********/
-					Q.state.inc("lives",1);
+					Q.state.inc("lives",3);
 
 					/*Q.clearStages();
 					Q.stageScene('gameOverScreen');*/
@@ -679,24 +682,34 @@ window.addEventListener("load",function() {
 			this.play("show_content_" + this.p.chestContent);
 		},
 		giveReward: function(collision) {
-			this.p.toPlayer.p.items.push(this.p.chestContent);			
-			this.p.toPlayer.p.itemsCooldown.push(0);
 
-			if(this.p.chestContent == "shield")
-				this.p.toPlayer.p.itemsDefCooldown.push(0);
-			else if(this.p.chestContent == "bow")
-				this.p.toPlayer.p.itemsDefCooldown.push(1);
-			else if(this.p.chestContent == "bomb")
-				this.p.toPlayer.p.itemsDefCooldown.push(2);
+			if(this.p.chestContent == "heart")
+				Q.state.inc("lives", 1);
 
-			var currentIndex = Q.state.get("currentItem");
-			var desiredIndex = this.p.toPlayer.p.items.length - 1;
-			if(desiredIndex == 0)	//first item
-				Q.state.inc("currentItem",1);
-			else if (desiredIndex-currentIndex == 0)
-				Q.state.inc("currentItem",this.p.toPlayer.p.items.length);
-			else
-				Q.state.inc("currentItem",desiredIndex-currentIndex);
+			else{
+				this.p.toPlayer.p.items.push(this.p.chestContent);			
+				this.p.toPlayer.p.itemsCooldown.push(0);
+
+				if(this.p.chestContent == "shield")
+					this.p.toPlayer.p.itemsDefCooldown.push(0);
+				else if(this.p.chestContent == "bow")
+					this.p.toPlayer.p.itemsDefCooldown.push(1);
+				else if(this.p.chestContent == "bomb")
+					this.p.toPlayer.p.itemsDefCooldown.push(2);
+				else if(this.p.chestContent == "firestaff")
+					this.p.toPlayer.p.itemsDefCooldown.push(1.5);
+				else if(this.p.chestContent == "icestaff")
+					this.p.toPlayer.p.itemsDefCooldown.push(1.5);
+
+				var currentIndex = Q.state.get("currentItem");
+				var desiredIndex = this.p.toPlayer.p.items.length - 1;
+				if(desiredIndex == 0)	//first item
+					Q.state.inc("currentItem",1);
+				else if (desiredIndex-currentIndex == 0)
+					Q.state.inc("currentItem",this.p.toPlayer.p.items.length);
+				else
+					Q.state.inc("currentItem",desiredIndex-currentIndex);
+			}
 		}
 
 	});
@@ -952,6 +965,8 @@ window.addEventListener("load",function() {
 		stage.insert(new Q.Chest({x: 584, y: 204, chestContent:"shield"}));
 		stage.insert(new Q.Chest({x: 513, y: 998, chestContent:"bow"}));
 		stage.insert(new Q.Chest({x: 1345, y: 572, chestContent:"bomb"}));
+
+		stage.insert(new Q.Chest({x: 584, y: 254, chestContent:"heart"}));
 
 		/*SPAWN ENEMIES*/
 
