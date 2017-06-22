@@ -457,7 +457,7 @@ window.addEventListener("load",function() {
 			else if(normalX == 1)
 				attackSide = "right";
 
-			if(this.p.shielding && this.p.direction == attackSide) {
+			if((this.p.shielding && this.p.direction == attackSide) || this.p.ignoreControlsSoft) {
 				if(enemy != undefined)
 					enemy.loseHP(0, attackSide);
 			}
@@ -465,9 +465,14 @@ window.addEventListener("load",function() {
 			else {
 				Q.state.dec("lives",1);
 				
-				/********GOD MODE***********/
-				if(Q.state.get("lives") == 0)
+				if(Q.state.get("lives") == 0){
+					/********GOD MODE***********/
 					Q.state.inc("lives",1);
+
+					/*Q.clearStages();
+					Q.stageScene('gameOverScreen');*/
+
+				}
 
 				this.p.ignoreControlsSoft = true; 
 				//this.p.newSlash = false;
@@ -1364,11 +1369,33 @@ window.addEventListener("load",function() {
 		container.fit(20);
 	});
 
+	Q.scene('gameOverScreen',function(stage) {
+		var bgImg = "gameOver.jpg";
+
+		var imgw = Q.assets[bgImg].width;
+		var imgh = Q.assets[bgImg].height;
+		//var imgScale = Math.min(Q.width/imgw, Q.height/imgh);
+		var imgScale = Q.height/imgh;
+
+		var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)" }));
+		var button = container.insert(new Q.UI.Button({ asset: bgImg, x: 0, y: 0, scale: imgScale, keyActionName:['confirm', 'fire', 'action'] }))
+		var title = container.insert(new Q.UI.Text({x: 0, y: -Q.height/2.5, weight: 100, size: 80, family: "Triforce", color: "#CA010C", outlineWidth: 6, outlineColor: "#000000", label: "Game Over" }));
+
+		var back = container.insert(new Q.UI.Text({x: 0, y: Q.height/3, weight: 100, size: 50, family: "Hylia", color: "#FFFFFF", outlineColor: "#000000", outlineWidth: 6, label: "Main Menu" }));
+
+		button.on("click",function() {
+			Q.clearStages();
+			Q.stageScene('titleScreen');
+		});
+
+		container.fit(20);
+	});
+
 /********************************/
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, gameOver.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
