@@ -470,7 +470,7 @@ window.addEventListener("load",function() {
 				
 				if(Q.state.get("lives") == 0){
 					/********GOD MODE***********/
-					Q.state.inc("lives",3);
+					Q.state.inc("lives",1);
 
 					/*Q.clearStages();
 					Q.stageScene('gameOverScreen');*/
@@ -684,7 +684,7 @@ window.addEventListener("load",function() {
 		giveReward: function(collision) {
 
 			if(this.p.chestContent == "heart")
-				Q.state.inc("lives", 1);
+				Q.state.inc("lives", 3);
 
 			else{
 				this.p.toPlayer.p.items.push(this.p.chestContent);			
@@ -965,7 +965,7 @@ window.addEventListener("load",function() {
 		stage.insert(new Q.Chest({x: 584, y: 204, chestContent:"shield"}));
 		stage.insert(new Q.Chest({x: 513, y: 998, chestContent:"bow"}));
 		stage.insert(new Q.Chest({x: 1345, y: 572, chestContent:"bomb"}));
-		stage.insert(new Q.Chest({x: 1316, y: 1250, chestContent:"firestaff"}));
+		stage.insert(new Q.Chest({x: 1266, y: 1250, chestContent:"firestaff"}));
 		stage.insert(new Q.Chest({x: 1116, y: 1250, chestContent:"icestaff"}));
 
 		//stage.insert(new Q.Chest({x: 584, y: 254, chestContent:"heart"}));
