@@ -1,6 +1,3 @@
 {
-	"iceProjectile_left":{"sx":39,"sy":0,"tileW":39,"tileH":39,"frames":1, "spacingX" : 0},
-	"iceProjectile_up":{"sx":0,"sy":0,"tileW":39,"tileH":39,"frames":1, "spacingX" : 0},
-	"iceProjectile_right":{"sx":39,"sy":0,"tileW":39,"tileH":39,"frames":1, "spacingX" : 0},
-	"iceProjectile_down":{"sx":0,"sy":0,"tileW":39,"tileH":39,"frames":1, "spacingX" : 0}
+	"iceProjectile":{"sx":0,"sy":0,"tileW":14,"tileH":14,"frames":4, "spacingX" : 0}
 }

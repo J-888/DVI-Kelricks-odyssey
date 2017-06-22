@@ -135,13 +135,13 @@ window.addEventListener("load",function() {
 	Q.animations('chest anim', {
 		closed: { frames: [0], rate: 1/4.5, loop: false},
 		opening: { frames: [1,2,3], rate: 1/2, loop: false, trigger: "showContent"},
-		show_content_: { frames: [3], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
-		show_content_bow: { frames: [4], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
-		show_content_bomb: { frames: [5], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
-		show_content_shield: { frames: [6], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
-		show_content_firestaff: { frames: [7], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
-		show_content_icestaff: { frames: [8], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
-		show_content_heart: { frames: [9], rate: 2, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_: { frames: [3], rate: 1, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_bow: { frames: [4], rate: 1, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_bomb: { frames: [5], rate: 1, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_shield: { frames: [6], rate: 1, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_firestaff: { frames: [7], rate: 1, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_icestaff: { frames: [8], rate: 1, loop: false, trigger: "giveReward", next: "opened"},
+		show_content_heart: { frames: [9], rate: 1, loop: false, trigger: "giveReward", next: "opened"},
 		opened: { frames: [3], rate: 1/4.5, loop: false}
 	});
 
@@ -365,7 +365,7 @@ window.addEventListener("load",function() {
 				this.p.itemsCooldown[currentItemNumber] = this.p.itemsDefCooldown[currentItemNumber]
 
 				if(this.p.items[currentItemNumber] == "bow"){
-					var arrowSpeed = 250;
+					var arrowSpeed = 400;
 					var locationX = this.p.x;
 					var locationY = this.p.y;
 					var speedX = 0;
@@ -386,6 +386,34 @@ window.addEventListener("load",function() {
 					}
 					Q.stage().insert(new Q.Arrow({x: locationX, y: locationY, vx: speedX, vy: speedY, dir: this.p.direction}));
 				}
+
+				if(this.p.items[currentItemNumber] == "icestaff" || this.p.items[currentItemNumber] == "firestaff" ){
+					var proyectileSpeed = 150;
+					var locationX = this.p.x;
+					var locationY = this.p.y;
+					var speedX = 0;
+					var speedY = 0;
+					var margin = 5;
+					if(this.p.direction == "up"){
+						locationY -= (this.p.cy + margin);
+						speedY = - proyectileSpeed;
+					} else if(this.p.direction == "down"){
+						locationY += this.p.cy + margin;
+						speedY = proyectileSpeed;
+					} else if(this.p.direction == "left"){
+						locationX -= (this.p.cy + margin);
+						speedX = - proyectileSpeed;
+					} else if(this.p.direction == "right"){
+						locationX += this.p.cx + margin;
+						speedX = proyectileSpeed;
+					}
+
+					if(this.p.items[currentItemNumber] == "icestaff")
+						Q.stage().insert(new Q.IceProjectile({x: locationX, y: locationY, vx: speedX, vy: speedY, dir: this.p.direction}));
+					else
+						Q.stage().insert(new Q.FireProjectile({x: locationX, y: locationY, vx: speedX, vy: speedY, dir: this.p.direction}));
+				}
+
 				else if(this.p.items[currentItemNumber] == "bomb"){
 					var grav = 100;
 					var throwSpeed = 50;
@@ -826,6 +854,93 @@ window.addEventListener("load",function() {
 
 	});
 
+
+	Q.Sprite.extend("IceProjectile",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "iceProjectile",
+				sprite: "projectile anim",
+				dir: ""
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, projectile');
+			this.on("hit",this,"collision");
+			this.play("fly_4dir_" + this.p.dir);
+		},
+		collision: function(collision) {
+			if (collision.obj.isA("IceProjectile")){
+				collision.obj.destroy();
+			}
+			else if(!collision.obj.isA("Player") && !collision.obj.isA("IceProjectile")) { 
+				this.destroy();
+
+				if(collision.obj.defaultEnemy != undefined) { 
+						var attackSide = "down";	//y=1
+					if(collision.normalY == +1)
+						attackSide = "up";
+					if(collision.normalX == +1)
+						attackSide = "left";
+					else if(collision.normalX == -1)
+						attackSide = "right";
+
+					collision.obj.loseHP(35, this.p.dir);
+				}
+			}
+		},
+		step: function(dt){
+			if (this.p.vx == 0 && this.p.vy == 0)
+				this.destroy();
+		}
+
+	});
+
+	Q.Sprite.extend("FireProjectile",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				sheet: "fireProjectile",
+				sprite: "projectile anim",
+				dir: ""
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, projectile');
+			this.on("hit",this,"collision");
+			this.play("fly_4dir_" + this.p.dir);
+		},
+		collision: function(collision) {
+			if (collision.obj.isA("FireProjectile")){
+				collision.obj.destroy();
+			}
+			else if(!collision.obj.isA("Player") && !collision.obj.isA("FireProjectile")) { 
+				this.destroy();
+
+				if(collision.obj.defaultEnemy != undefined) { 
+						var attackSide = "down";	//y=1
+					if(collision.normalY == +1)
+						attackSide = "up";
+					if(collision.normalX == +1)
+						attackSide = "left";
+					else if(collision.normalX == -1)
+						attackSide = "right";
+
+					collision.obj.loseHP(35, this.p.dir);
+				}
+			}
+		},
+		step: function(dt){
+			if (this.p.vx == 0 && this.p.vy == 0)
+				this.destroy();
+		}
+
+	});
+
 	Q.Sprite.extend("Gate",{
 
 		// the init constructor is called on creation
@@ -1230,6 +1345,10 @@ window.addEventListener("load",function() {
         			current = "\ue604"	//bow char
         		else if (current == "bomb")
         			current = "\ue601"	//bomb char
+        		else if (current == "firestaff")
+        			current = "\ue608"	//firestaff char
+        		else if (current == "icestaff")
+        			current = "\ue60A"	//icestaff char
 
 				this.p.label = current;
 			}
@@ -1459,7 +1578,7 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, gameOver.jpg, ending.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, gameOver.jpg, ending.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, iceProjectile.png, iceProjectile.json, fireProjectile.png, fireProjectile.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -1473,6 +1592,8 @@ window.addEventListener("load",function() {
 		Q.compileSheets("bombThrown.png", "bombThrown.json");
 		Q.compileSheets("explosion.png", "explosion.json");
 		Q.compileSheets("arrow.png", "arrow.json");
+		Q.compileSheets("iceProjectile.png", "iceProjectile.json");
+		Q.compileSheets("fireProjectile.png", "fireProjectile.json");
 		Q.compileSheets("caveWalls.png", "caveWalls.json");
 		Q.compileSheets("caveHole.png", "caveHole.json");
 		
