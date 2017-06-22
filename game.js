@@ -965,8 +965,10 @@ window.addEventListener("load",function() {
 		stage.insert(new Q.Chest({x: 584, y: 204, chestContent:"shield"}));
 		stage.insert(new Q.Chest({x: 513, y: 998, chestContent:"bow"}));
 		stage.insert(new Q.Chest({x: 1345, y: 572, chestContent:"bomb"}));
+		stage.insert(new Q.Chest({x: 1316, y: 1250, chestContent:"firestaff"}));
+		stage.insert(new Q.Chest({x: 1116, y: 1250, chestContent:"icestaff"}));
 
-		stage.insert(new Q.Chest({x: 584, y: 254, chestContent:"heart"}));
+		//stage.insert(new Q.Chest({x: 584, y: 254, chestContent:"heart"}));
 
 		/*SPAWN ENEMIES*/
 
