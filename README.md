@@ -22,9 +22,7 @@ Sprites de cada nivel:
 
 Enemigos:
   * [Octorok](http://spritedatabase.net/file/6048)
-  * [Skeleton]
   * [Skull](https://www.spriters-resource.com/custom_edited/thelegendofzeldacustoms/sheet/17337/)
-  * [Robot]
   * [Boss](http://updates.themanaworld.net/client-data/graphics/sprites/monsters/?C=M;O=A)
  
 Objetos adicionales:
