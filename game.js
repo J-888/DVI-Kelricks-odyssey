@@ -213,7 +213,14 @@ window.addEventListener("load",function() {
 				}
 			},
 			die: function(p) {
-				this.destroy();
+				if(this.p.name == "boss"){
+					this.destroy();
+					Q.clearStages();
+					Q.stageScene('endingScreen');
+				}
+				else{
+					this.destroy();
+				}
 			}
 		}
 	});
@@ -674,7 +681,8 @@ window.addEventListener("load",function() {
 			this._super(p, {
 				name: "robot",
 				sheet: "robot_move_down",
-				sprite: "robot anim"
+				sprite: "robot anim",
+				hp: 50
 			});
 
 			// Add in pre-made components to get up and running quickly
@@ -1311,7 +1319,7 @@ window.addEventListener("load",function() {
 
 		for(var j = 0; (j < map._map.length) && !chestLocationFound; j++) {
 			for(var i = 0; (i < map._map[j].length) && !chestLocationFound; i++) {
-				console.log("x: " + i + ", y: " + j);
+				//console.log("x: " + i + ", y: " + j);
 				if(map._map[i][j]==1){
 					chestLocationFound = true;
 					
@@ -1357,13 +1365,15 @@ window.addEventListener("load",function() {
 			var enemyX = 16*wallScale*freeLocations[selectedSpot][0];
 			var enemyY = 16*wallScale*freeLocations[selectedSpot][1];
 
-			var selectedEnemy = Math.floor(Math.random() * 2);
+			var selectedEnemy = Math.floor(Math.random() * 4);
 			if (selectedEnemy == 0)
 				stage.insert(new Q.Octorok({x: enemyX, y: enemyY}));
 			else if (selectedEnemy == 1)
 				stage.insert(new Q.Skeleton({x: enemyX, y: enemyY}));
 			else if (selectedEnemy == 2)
 				stage.insert(new Q.Skull({x: enemyX, y: enemyY}));
+			else if (selectedEnemy == 3)
+				stage.insert(new Q.Robot({x: enemyX, y: enemyY}));
 
 			freeLocations.splice(selectedSpot, 1);
 		}
