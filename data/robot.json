@@ -1,0 +1,6 @@
+{
+	"robot_move_up":{"sx":186,"sy":0,"tileW":31,"tileH":31,"frames":2, "spacingX" : 0},
+	"robot_move_right":{"sx":124,"sy":0,"tileW":31,"tileH":31,"frames":2, "spacingX" : 0},
+	"robot_move_left":{"sx":62,"sy":0,"tileW":31,"tileH":31,"frames":2, "spacingX" : 0},
+	"robot_move_down":{"sx":0,"sy":0,"tileW":31,"tileH":31,"frames":2, "spacingX" : 0}
+}

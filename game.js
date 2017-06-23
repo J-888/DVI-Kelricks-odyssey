@@ -71,6 +71,11 @@ window.addEventListener("load",function() {
 		move_flipped: { frames: [0,1], rate: 1/4.5, flip: "x"}
 	});
 
+	Q.animations('robot anim', {
+		move: { frames: [0,1], rate: 1/4.5, flip: "x"},
+		move_flipped: { frames: [0,1], rate: 1/4.5, flip: "x"}
+	});
+
 	Q.animations('boss anim', {
 		move: { frames: [0,1,2,3,4,5,6,7,8,9], rate: 1/4.5, flip: "x"},
 		move_flipped: { frames: [0,1,2,3,4,5,6,7,8,9], rate: 1/4.5, flip: "x"}
@@ -654,6 +659,22 @@ window.addEventListener("load",function() {
 				name: "skull",
 				sheet: "skull_move_down",
 				sprite: "skull anim"
+			});
+
+			// Add in pre-made components to get up and running quickly
+			this.add('2d, animation, tween, defaultEnemy, aiChase, customPlayAnim');
+		}
+	});
+
+	Q.Sprite.extend("Robot",{
+
+		// the init constructor is called on creation
+		init: function(p) {
+			// You can call the parent's constructor with this._super(..)
+			this._super(p, {
+				name: "robot",
+				sheet: "robot_move_down",
+				sprite: "robot anim"
 			});
 
 			// Add in pre-made components to get up and running quickly
@@ -1566,15 +1587,6 @@ window.addEventListener("load",function() {
 			Q.stageScene('creditsScreen');
 		});
 
-
-
-		/*button.on("click",function() {
-			Q.clearStages();
-			Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
-			Q.stageScene('level' + Q.state.get("level"));
-			Q.stageScene("HUD",1);
-		});*/
-
 		container.fit(20);
 	});
 
@@ -1703,7 +1715,8 @@ window.addEventListener("load",function() {
 /*************LOAD***************/
 /********************************/
 
-	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, gameOver.jpg, ending.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, iceProjectile.png, iceProjectile.json, fireProjectile.png, fireProjectile.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
+	Q.load("playerSheetTransparent.png, playerSpritesTransparent.json, playerSheetPink.gif, playerSpritesPink.json, swordAttack.png, swordAttack.json, shield.png, shield.json, octorok.png, octorok.json, skeletonMovement.png, skeletonMovement.json, skullMovement.png, skullMovement.json, robot.png, robot.json, boss.png, boss.json, mainTitle.jpg, credits.jpg, gameOver.jpg, ending.jpg, overworld.png, overworld.json, chest.png, chest.json, bombThrown.png, bombThrown.json, explosion.png, explosion.json, arrow.png, arrow.json, iceProjectile.png, iceProjectile.json, fireProjectile.png, fireProjectile.json, caveWalls.png, caveWalls.json, caveHole.png, caveHole.json", function() {
+		
 		Q.compileSheets("playerSheetTransparent.png", "playerSpritesTransparent.json");
 		//Q.compileSheets("playerSheetPink.gif", "playerSpritesPink.json");
 		Q.compileSheets("swordAttack.png", "swordAttack.json");
@@ -1711,6 +1724,7 @@ window.addEventListener("load",function() {
 		Q.compileSheets("octorok.png", "octorok.json");
 		Q.compileSheets("skeletonMovement.png", "skeletonMovement.json");
 		Q.compileSheets("skullMovement.png", "skullMovement.json");
+		Q.compileSheets("robot.png", "robot.json");
 		Q.compileSheets("boss.png", "boss.json");
 		Q.compileSheets("overworld.png", "overworld.json");
 		Q.compileSheets("chest.png", "chest.json");

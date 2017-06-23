@@ -1,6 +1,0 @@
-{
-	"robotPiedra_up":{"sx":186,"sy":0,"tileW":31,"tileH":31,"frames":2, "spacingX" : 0},
-	"robotPiedra_right":{"sx":124,"sy":0,"tileW":31,"tileH":31,"frames":2, "spacingX" : 0},
-	"robotPiedra_left":{"sx":62,"sy":0,"tileW":31,"tileH":31,"frames":2, "spacingX" : 0},
-	"robotPiedra_down":{"sx":0,"sy":0,"tileW":31,"tileH":31,"frames":2, "spacingX" : 0}
-}
