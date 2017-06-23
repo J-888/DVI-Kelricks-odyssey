@@ -668,7 +668,8 @@ window.addEventListener("load",function() {
 			this._super(p, {
 				name: "skull",
 				sheet: "skull_move_down",
-				sprite: "skull anim"
+				sprite: "skull anim",
+				immunities: ['bomb']
 			});
 
 			// Add in pre-made components to get up and running quickly
@@ -1567,7 +1568,7 @@ window.addEventListener("load",function() {
 			if(this.container.p.menuIndex == 0) {
 				Q.clearStages();
 
-				Q.state.reset({ level: 1, lives: 5, currentItem: 0 });
+				Q.state.reset({ level: 1, lives: 10, currentItem: 0 });
 				Q.stageScene('forestLevel');
 
 				Q.stageScene("HUD",1);

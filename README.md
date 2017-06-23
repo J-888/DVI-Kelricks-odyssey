@@ -28,11 +28,11 @@ Kelrick es un joven héroe que se aventura por un extenso bosque lleno de peligr
 ## Objetivo
 El objetivo del jugador es explorar los diversos escenarios (bosque y cuevas), pasando al escenario siguente al atravesar puertas y cavidades, hasta encontrar al jefe final y derrotarle. 
 
-Los cofres actuan como bonus, facilitando esta exploracion al otorgar al jugador nuevos objetos o aumentando su cantidad de vida.
+Los cofres actúan como bonus, facilitando esta exploración al otorgar al jugador nuevos objetos o aumentando su cantidad de vida.
 
 los enemigos tratan de golpear al jugador, reduciendo su cantidad de vida hasta que esta llega a cero y se pierde la partida.
 
-## Mecanicas centrales
+## mecánicas centrales
 Kelrick posee ataques con la espada direccionales, asi como la posibilidad de portar ilimitados items, como:
   * Puede obtener un escudo que le ayudará a deflectar distintos ataques de los enemigos. Este objeto puede ser usado constantemente.
   * Puede obtener un arco que puede disparar hacia una dirección, con la ventaja de rango ilimitado, pero un daño bastante inferior a la espada. Este objeto no puede ser usado constantemente, ya que posee un tiempo de *cooldown*.
@@ -47,7 +47,7 @@ Existen 3 fases en el juego
  * Tres niveles en cuevas generadas proceduralente, cada uno de mayor tamaño y dificultad que las anteriores
  * Enfrentamiento al jefe final
 
-Además, el juego contiene numerosas mecanicas menores, como un sistema de *knockback*
+Además, el juego contiene numerosas mecánicas menores, como un sistema de *knockback*
 
 ## Referentes
 The Legend of Zelda Series
@@ -58,7 +58,7 @@ The Legend of Zelda Series
   * No lograr una diferencia significativa entre los diferentes enemigos
 
 # Diseño de la implementación
-Para realizar la implementación del proyecto hemos empleado el motor Quintus, realizando cambios internos en este para incluir un sistema de control (*topDownControls*) que se adaptase a nuestras necesitades. Ademas, hemos añadido un jugador, con una serie de atributos relaccionados con el inventario y el estado del jugador, asi como una serie de enemigos, extrayendo todo el codigo comun en un componente (*defaultEnemy*). Además, al existir numerosos proyectiles que comparten un comportamiento basico, lo hemos implementado como otro componente (*projectile*). Tambien hemos realizado la implementacion de dos inteligencias arficiales basadas en arboles de decision (*AIshooter* y *AIchaser*), consistentes en la realizacion de una una acción en función de una serie de condiciones del estado del juego (a cada *step*). Por ultimo, hemos adaptado la libreria *rot.js* para generar un sistema de cuevas procedural, obteniendo de esta libreria un "mapa" de 0s y 1s, eliminando nosotros todas las posibles imperfecciones de este, pintando esta cueva mediante *sprites* de paredes individuales y colocando al jugador, a los enemigos, cofres y la cavidad/puerta al siguiente nivel de forma automática.
+Para realizar la implementación del proyecto hemos empleado el motor Quintus, realizando cambios internos en este para incluir un sistema de control (*topDownControls*) que se adaptase a nuestras necesitades. Además, hemos añadido un jugador, con una serie de atributos relaccionados con el inventario y el estado del jugador, asi como una serie de enemigos, extrayendo todo el código común en un componente (*defaultEnemy*). Además, al existir numerosos proyectiles que comparten un comportamiento basico, lo hemos implementado como otro componente (*projectile*). Tambien hemos realizado la implementación de dos inteligencias arficiales basadas en arboles de decisión (*AIshooter* y *AIchaser*), consistentes en la realización de una una acción en función de una serie de condiciones del estado del juego (a cada *step*). Por ultimo, hemos adaptado la libreria *rot.js* para generar un sistema de cuevas procedural, obteniendo de esta libreria un "mapa" de 0s y 1s, eliminando nosotros todas las posibles imperfecciones de este, pintando esta cueva mediante *sprites* de paredes individuales y colocando al jugador, a los enemigos, cofres y la cavidad/puerta al siguiente nivel de forma automática.
 
 # Equipo de trabajo y reparto de tareas
 El equipo de trabajo del proyecto ([Hector Malagón Roldán](https://github.com/HectorMalagon) y [Jose Miguel Tajuelo Garrigós](https://github.com/J-888)) consideramos que hemos realizado una trabajo identica (50% y 50%), debido a que practicamente todo el trabajo se ha realizado mediante el método de *pair programming*, tanto de manera presencial como por videoconferencia. no obstante,  excepciones a este metodo han sido la depuración del proyecto, el estudio de tecnicas procedurales y la busqueda de fuentes audiovisuales, que hemos realizado (si bien de forma separada) ambos miembros del equipo, realizando cantidades de trabajo equivalentes.
@@ -90,4 +90,4 @@ Imagenes de fondos (modificadas por nosotros):
   * [Game Over](http://wallpaperpulse.com/wallpaper/1239951)
   * [End](http://blog.paleohacks.com/wp-content/uploads/2013/02/PaleoHacks-About-Page.jpg)
   
-[rot.js](http://ondras.github.io/rot.js/hp/) para la [generacion procedural de cuevas](http://j-888.me/DVI-Kelricks-odyssey/procedural_cave_demo)(para la que hemos requerido la experimentacion con numerosos parametros)
+[rot.js](http://ondras.github.io/rot.js/hp/) para la [generación procedural de cuevas](http://j-888.me/DVI-Kelricks-odyssey/procedural_cave_demo)(para la que hemos requerido la experimentacion con numerosos parametros)
