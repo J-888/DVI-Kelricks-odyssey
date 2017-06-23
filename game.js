@@ -188,28 +188,31 @@ window.addEventListener("load",function() {
 			});*/
 		},
 		extend: {	
-			loseHP: function(damage, playerDir) {
-				this.p.hp = Math.max(this.p.hp - damage, 0);
-				if(this.p.hp == 0)
-					this.die();
-				else{	//knockback					
-					this.p.ignoreControls = true; 
-					var speedMult = -200;
-					var normalX = 0;
-					var normalY = 0;
+			loseHP: function(damage, playerDir, weapon) {
 
-					if(playerDir == "up")
-						normalY = +1;
-					else if(playerDir == "down")
-						normalY = -1;
-					else if(playerDir == "left")
-						normalX = +1;
-					else if(playerDir == "right")
-						normalX = -1;
+				if(this.p.immunities == undefined || this.p.immunities.indexOf(weapon) == -1){
+					this.p.hp = Math.max(this.p.hp - damage, 0);
+					if(this.p.hp == 0)
+						this.die();
+					else{	//knockback					
+						this.p.ignoreControls = true; 
+						var speedMult = -200;
+						var normalX = 0;
+						var normalY = 0;
 
-					this.p.vx = speedMult * normalX;
-					this.p.vy = speedMult * normalY;
-					this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
+						if(playerDir == "up")
+							normalY = +1;
+						else if(playerDir == "down")
+							normalY = -1;
+						else if(playerDir == "left")
+							normalX = +1;
+						else if(playerDir == "right")
+							normalX = -1;
+
+						this.p.vx = speedMult * normalX;
+						this.p.vy = speedMult * normalY;
+						this.animate({ vx: 0, vy: 0}, 0.25, {callback: function() { this.p.ignoreControls = false; }});
+					}
 				}
 			},
 			die: function(p) {
@@ -502,7 +505,7 @@ window.addEventListener("load",function() {
 
 			if((this.p.shielding && this.p.direction == attackSide) || this.p.ignoreControlsSoft) {
 				if(enemy != undefined)
-					enemy.loseHP(0, attackSide);
+					enemy.loseHP(0, attackSide, "shield");
 			}
 
 			else {
@@ -567,7 +570,7 @@ window.addEventListener("load",function() {
 				var minY = range[2];
 				var maxY = range[3];
 				if(this.p.x+this.p.cx >= minX && this.p.x-this.p.cx <= maxX && this.p.y+this.p.cy >= minY && this.p.y-this.p.cy <= maxY) {
-					this.loseHP(swordDamage, dir);
+					this.loseHP(swordDamage, dir, "sword");
 				}
 			}, [minX, maxX, minY, maxY], swordDamage, dir); 
 		},
@@ -682,7 +685,8 @@ window.addEventListener("load",function() {
 				name: "robot",
 				sheet: "robot_move_down",
 				sprite: "robot anim",
-				hp: 50
+				hp: 50,
+				immunities: ['arrow']
 			});
 
 			// Add in pre-made components to get up and running quickly
@@ -811,7 +815,7 @@ window.addEventListener("load",function() {
 				var maxY = range[3];
 				if(this.p.x+this.p.cx >= minX && this.p.x-this.p.cx <= maxX && this.p.y+this.p.cy >= minY && this.p.y-this.p.cy <= maxY) {
 					var dir = "down";	//TODO
-					this.loseHP(bombDamage, dir);
+					this.loseHP(bombDamage, dir, "bomb");
 				}
 			}, [minX, maxX, minY, maxY], bombDamage); 
 		}
@@ -872,7 +876,7 @@ window.addEventListener("load",function() {
 					else if(collision.normalX == -1)
 						attackSide = "right";
 
-					collision.obj.loseHP(20, this.p.dir);
+					collision.obj.loseHP(20, this.p.dir, "arrow");
 				}
 			}
 		},
@@ -916,7 +920,7 @@ window.addEventListener("load",function() {
 					else if(collision.normalX == -1)
 						attackSide = "right";
 
-					collision.obj.loseHP(35, this.p.dir);
+					collision.obj.loseHP(35, this.p.dir, "ice");
 				}
 			}
 		},
@@ -959,7 +963,7 @@ window.addEventListener("load",function() {
 					else if(collision.normalX == -1)
 						attackSide = "right";
 
-					collision.obj.loseHP(35, this.p.dir);
+					collision.obj.loseHP(35, this.p.dir, "fire");
 				}
 			}
 		},
